@@ -1,4 +1,5 @@
 import re
+from gql import gql
 FILENAME = 'file.graphql'
 
 class Parser():
@@ -23,12 +24,8 @@ class Parser():
                     break
             for line in file:
                 if line.startswith('}'):
+                    query += line
                     break
                 query += line
-        return query
-    
-parser = Parser(FILENAME)
-query_names = parser.extract_query_names()
-
-print(parser.extract_query(query_names[0]))
+        return gql(query)
 
