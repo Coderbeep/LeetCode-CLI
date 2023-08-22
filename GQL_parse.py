@@ -1,7 +1,12 @@
 import re
-from gql import gql
-FILENAME = 'file.graphql'
+from gql import gql, Client
+from gql.transport.aiohttp import AIOHTTPTransport
+import os
 
+""" Global variables declaration """
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+QUERIES_PATH = os.path.join(SCRIPT_DIR, 'queries.graphql')
+URL = 'https://leetcode.com/graphql/'
 class Parser():
     def __init__(self, filename):
         self.filename = filename
@@ -29,3 +34,9 @@ class Parser():
                 query += line
         return gql(query)
 
+def query_leet(query, params):
+    # State the API endpoint for communicationm
+    transport = AIOHTTPTransport(url=URL)
+    client = Client(transport=transport, fetch_schema_from_transport=False)
+    result = client.execute(query, variable_values=params)
+    return result
