@@ -72,14 +72,3 @@ def handle_statistics(args):
     print(tabulate(table_data, 
                    headers=['Difficulty', 'Question Count', 'Beaten Stats %', 'Submit Count'],
                    tablefmt='psql'))
-
-def handle_problems(args):
-    parser = Parser(QUERIES_PATH)
-    query_names = parser.extract_query_names()
-    query = parser.extract_query(query_names[1])
-    params = {'categorySlug': "", 'skip': 80, 'limit': 20, 'filters': {}}
-    result = query_leet(query, params)
-
-    titles = [question['title'] for question in result['problemsetQuestionList']['questions']]
-    for title in titles:
-        print(title)
