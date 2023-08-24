@@ -1,8 +1,8 @@
-from typing import List, Dict, Optional
+from typing import List
 from dataclasses import dataclass
 from dataclass_wizard import JSONWizard
 from tabulate import tabulate
-from from_git import GraphQLQuery
+from graphql_query import GraphQLQuery
 from template import QueryTemplate
 
 @dataclass

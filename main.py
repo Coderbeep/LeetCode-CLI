@@ -1,6 +1,6 @@
 import argparse
-from skill_stats import userProblemsSolved
-from problems_list import problemsetQuestionList
+from models.skill_stats import userProblemsSolved
+from models.problems_list import problemsetQuestionList
 
 
 QUERIES = {'userProblemsSolved': 0,
@@ -8,14 +8,7 @@ QUERIES = {'userProblemsSolved': 0,
 
 
 def main():
-
-    # params = {'categorySlug': "", 'skip': 0, 'limit': 5, 'filters': {'status': "AC"}}
-
-    # configuration = Configuration(SESSION)
-    # leet_api = LeetAPI(configuration)
-    
     parser = argparse.ArgumentParser(description="Leet CLI")
-
     subparsers = parser.add_subparsers(title="Commands", dest="command")
     
     stats_parser = subparsers.add_parser("stats", help="Display statistics")
