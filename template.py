@@ -19,6 +19,7 @@ class QueryTemplate():
         self.get_query()
     
     def show(self):
+        """ Basic information showing functionality. """
         pass
     
     def get_name(self):
@@ -27,4 +28,7 @@ class QueryTemplate():
     def get_query(self):
         self.query = self.parser.extract_query(self.query_name)
 
-
+    def execute(self):
+        """ Method to handle the args passed by the 
+            argument parser. """
+        pass
