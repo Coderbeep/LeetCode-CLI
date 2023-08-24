@@ -1,11 +1,5 @@
 import argparse
-from models.skill_stats import userProblemsSolved
-from models.problems_list import problemsetQuestionList
-
-
-QUERIES = {'userProblemsSolved': 0,
-           'problemsetQuestionList': 1}
-
+from models import *
 
 def main():
     parser = argparse.ArgumentParser(description="Leet CLI")

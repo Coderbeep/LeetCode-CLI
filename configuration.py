@@ -5,11 +5,11 @@ class Configuration():
         self.host = 'https://leetcode.com/'
         self.session_id = session_id
         
-        self._csrf_cookie: str = None
+        self._csrf_cookie: str = self.csrf_cookie
         
-        self._headers: dict = {'x-csrftoken': self.csrf_cookie,
+        self._headers: dict = {'x-csrftoken': self._csrf_cookie,
                                'Referer': self.host}
-        self._cookies: dict = {'csrftoken': self.csrf_cookie,
+        self._cookies: dict = {'csrftoken': self._csrf_cookie,
                                'LEETCODE_SESSION': self.session_id}       
     
     @property
