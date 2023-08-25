@@ -61,9 +61,9 @@ class problemsetQuestionList(QueryTemplate):
         
         for item in result_object.questions:
             data[item.frontendQuestionId] = [item.title, item.status, item.difficulty]
-        
         table_data = [[id] + attributes for id, attributes in data.items()]
         
+        print(f'Total number of retrieved problems: {result_object.total}')
         print(tabulate(table_data, 
                     headers=['ID', 'Title', 'Status', 'Difficulty'], 
                     tablefmt='psql'))
