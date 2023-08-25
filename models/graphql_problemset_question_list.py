@@ -36,11 +36,22 @@ class QueryResult(JSONWizard):
 class problemsetQuestionList(QueryTemplate):
     def __init__(self):
         super().__init__()
-        self.params = {'categorySlug': "", 'skip': 0, 'limit': 5, 'filters': {'status': "AC"}}
-        self.graphql_query = GraphQLQuery(self.query, self.params)
-        self.result = self.leet_API.post_query(self.graphql_query)
+        self.params = {'categorySlug': "", 'skip': 0, 'limit': 5, 'filters': {}}
+        self.graphql_query = None
+        self.result = None
 
     def execute(self, args):
+        status_mapping = {"solved": "AC",
+                          "todo": "NOT_STARTED",
+                          "attempted": "TRIED"}
+    
+        status_argument = next((status_arg for status_arg in status_mapping.keys() if getattr(args, status_arg)), None)
+        if status_argument:
+            self.params['filters']['status'] = status_mapping[status_argument]
+            
+        self.graphql_query = GraphQLQuery(self.query, self.params)
+        self.result = self.leet_API.post_query(self.graphql_query)
+        
         self.show()
         
     def show(self):

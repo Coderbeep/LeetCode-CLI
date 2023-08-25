@@ -11,6 +11,10 @@ def main():
     problems_parser = subparsers.add_parser("problems", help="Display problems")
     problems_parser.set_defaults(func=problemsetQuestionList)
     
+    problems_parser.add_argument('-s', '--solved', action='store_true', help='Display only solved problems.')
+    problems_parser.add_argument('-t', '--todo', action='store_true', help='Display only to do.')
+    problems_parser.add_argument('-a', '--attempted', action='store_true', help='Display only attempted problems.')
+    
     args = parser.parse_args()
     
     if hasattr(args, 'func'):
