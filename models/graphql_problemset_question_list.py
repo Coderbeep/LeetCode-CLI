@@ -35,6 +35,8 @@ class QueryResult(JSONWizard):
         return cls(total=total, questions=questions)
 
 
+# FIXME: Handle exit from pages
+# FIXME: Add the info about moving func
 class problemsetQuestionList(QueryTemplate):
     def __init__(self):
         super().__init__()
