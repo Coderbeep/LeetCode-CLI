@@ -4,6 +4,8 @@ from dataclass_wizard import JSONWizard
 from tabulate import tabulate
 from graphql_query import GraphQLQuery
 from template import QueryTemplate
+import os 
+import keyboard
 
 @dataclass
 class Question():
@@ -36,11 +38,36 @@ class QueryResult(JSONWizard):
 class problemsetQuestionList(QueryTemplate):
     def __init__(self):
         super().__init__()
-        self.params = {'categorySlug': "", 'skip': 0, 'limit': 5, 'filters': {}}
+        self.limit : int = 5
+        self.params = {'categorySlug': "", 'skip': 0, 'limit': self.limit, 'filters': {}}
         self.graphql_query = None
         self.result = None
+        self.page : int = 1
+        self.current_args = None
+        
+    def move_next(self):
+        self.page += 1
+        self.params['skip'] += self.limit
+        self.execute(self.current_args)
+        
+    def move_previous(self):
+        if self.page > 1:
+            self.page -= 1
+            self.params['skip'] -= self.limit
+            self.execute(self.current_args)
+            
+    def handle_keyboard_input(self):
+        while True:
+            key = keyboard.read_event(suppress=True)
+            if key.event_type == keyboard.KEY_DOWN:
+                if key.name == 'n':
+                    self.move_next()
+                elif key.name == 'N':
+                    self.move_previous()
+            
 
     def execute(self, args):
+        self.current_args = args
         status_mapping = {"solved": "AC",
                           "todo": "NOT_STARTED",
                           "attempted": "TRIED"}
@@ -53,8 +80,10 @@ class problemsetQuestionList(QueryTemplate):
         self.result = self.leet_API.post_query(self.graphql_query)
         
         self.show()
+        self.handle_keyboard_input()
         
     def show(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
         result_object = QueryResult.from_dict(self.result['data'])
         
         data = {}
@@ -63,7 +92,8 @@ class problemsetQuestionList(QueryTemplate):
             data[item.frontendQuestionId] = [item.title, item.status, item.difficulty]
         table_data = [[id] + attributes for id, attributes in data.items()]
         
-        print(f'Total number of retrieved problems: {result_object.total}')
+        print(f'Total number of retrieved problems: {result_object.total}\n')
         print(tabulate(table_data, 
                     headers=['ID', 'Title', 'Status', 'Difficulty'], 
                     tablefmt='psql'))
+        print(f"Page #{self.page} / ({self.limit * self.page}/{result_object.total})")
