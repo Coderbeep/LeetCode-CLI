@@ -60,12 +60,17 @@ class problemsetQuestionList(QueryTemplate):
             
     def handle_keyboard_input(self):
         while True:
-            key = keyboard.read_event(suppress=True)
-            if key.event_type == keyboard.KEY_DOWN:
-                if key.name == 'n':
+            # print("\nCommands: 'n' - Next page, 'N' - Previous page, 'q' - Quit")
+            event = keyboard.read_event(suppress=True)
+            
+            if event.event_type == keyboard.KEY_DOWN:
+                if event.name == 'n':
                     self.move_next()
-                elif key.name == 'N':
+                elif event.name == 'N':
                     self.move_previous()
+                elif event.name == 'q':
+                    break
+                
             
 
     def execute(self, args):
