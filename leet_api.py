@@ -2,6 +2,12 @@ from configuration import Configuration
 from graphql_query import GraphQLQuery
 import requests
 
+""" Class responsible for handling the POST requests to the 
+    Leetcode GraphQL API. 
+    
+    config variable should be of Configuration type which contains a session_id
+    for the proper work of the requests. """
+
 class LeetAPI():
     def __init__(self, config: Configuration):
         self.config = config

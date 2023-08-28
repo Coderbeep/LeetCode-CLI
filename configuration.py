@@ -1,5 +1,9 @@
 import requests
 
+""" The main configuration class for the connection to GraphQL API.
+    Contains the cookies and headers for the connection.
+    
+    session_id can be found in the web browser cookies of https://leetcode.com/"""
 class Configuration():
     def __init__(self, session_id: str):
         self.host = 'https://leetcode.com/'

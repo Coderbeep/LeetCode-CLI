@@ -1,5 +1,8 @@
 from typing import Any
 
+""" GraphQLQuery is the main class for queries itself. Contains
+    query code as well as the parameters """
+
 class GraphQLQuery():
     types = ['query', 'variables']
     

@@ -5,6 +5,11 @@ import os
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 QUERIES_PATH = os.path.join(SCRIPT_DIR, 'queries.graphql')
 URL = 'https://leetcode.com/graphql/'
+
+
+""" Parser class is responsible for extracting the queries from 
+    .graphql files. """
+
 class Parser():
     def __init__(self, filename = QUERIES_PATH):
         self.filename = filename
