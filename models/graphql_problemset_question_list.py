@@ -6,6 +6,7 @@ from graphql_query import GraphQLQuery
 from template import QueryTemplate
 import os 
 import keyboard
+import time
 
 @dataclass
 class Question():
@@ -40,36 +41,33 @@ class QueryResult(JSONWizard):
 class problemsetQuestionList(QueryTemplate):
     def __init__(self):
         super().__init__()
-        self.limit : int = 5
+        self.limit : int = 10
         self.params = {'categorySlug': "", 'skip': 0, 'limit': self.limit, 'filters': {}}
         self.graphql_query = None
         self.result = None
         self.page : int = 1
         self.current_args = None
         
-    def move_next(self):
-        self.page += 1
-        self.params['skip'] += self.limit
-        self.execute(self.current_args)
+    # def move_next(self):
+    #     self.page += 1
+    #     self.params['skip'] += self.limit
+    #     self.execute(self.current_args)
         
-    def move_previous(self):
-        if self.page > 1:
-            self.page -= 1
-            self.params['skip'] -= self.limit
-            self.execute(self.current_args)
+    # def move_previous(self):
+    #     if self.page > 1:
+    #         self.page -= 1
+    #         self.params['skip'] -= self.limit
+    #         self.execute(self.current_args)
             
-    def handle_keyboard_input(self):
-        while True:
-            # print("\nCommands: 'n' - Next page, 'N' - Previous page, 'q' - Quit")
-            event = keyboard.read_event(suppress=True)
-            
-            if event.event_type == keyboard.KEY_DOWN:
-                if event.name == 'n':
-                    self.move_next()
-                elif event.name == 'N':
-                    self.move_previous()
-                elif event.name == 'q':
-                    break
+    # def handle_keyboard_input(self):
+    #     while True:
+    #         event = keyboard.read_event(suppress=True)
+    #         if event.event_type == keyboard.KEY_DOWN and event.name == 'n':
+    #             self.move_next()
+    #         if event.event_type == keyboard.KEY_DOWN and event.name == 'N':
+    #             self.move_previous()
+    #         if event.event_type == keyboard.KEY_DOWN and event.name == 'q':
+    #             break
                 
             
 
@@ -87,20 +85,27 @@ class problemsetQuestionList(QueryTemplate):
         self.result = self.leet_API.post_query(self.graphql_query)
         
         self.show()
-        self.handle_keyboard_input()
+        # self.handle_keyboard_input()
         
     def show(self):
-        os.system('cls' if os.name == 'nt' else 'clear')
+        # os.system('cls' if os.name == 'nt' else 'clear')
         result_object = QueryResult.from_dict(self.result['data'])
         
         data = {}
         
+        retranslate = {'ac': 'Solved',
+                       'notac': 'Attempted',
+                       None: ''}
+        
         for item in result_object.questions:
-            data[item.frontendQuestionId] = [item.title, item.status, item.difficulty]
+            data[item.frontendQuestionId] = [item.title, retranslate[item.status], item.difficulty]
         table_data = [[id] + attributes for id, attributes in data.items()]
         
         print(f'Total number of retrieved problems: {result_object.total}\n')
         print(tabulate(table_data, 
                     headers=['ID', 'Title', 'Status', 'Difficulty'], 
                     tablefmt='psql'))
-        print(f"Page #{self.page} / ({self.limit * self.page}/{result_object.total})")
+        
+        displayed : int = self.limit * self.page if self.limit * self.page < result_object.total else result_object.total
+        
+        print(f"Page #{self.page} / ({displayed}/{result_object.total})")
