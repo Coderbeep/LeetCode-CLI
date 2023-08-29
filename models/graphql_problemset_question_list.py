@@ -46,7 +46,6 @@ class problemsetQuestionList(QueryTemplate):
         self.graphql_query = None
         self.result = None
         self.page : int = 1
-        self.current_args = None
         
     # def move_next(self):
     #     self.page += 1
@@ -69,18 +68,23 @@ class problemsetQuestionList(QueryTemplate):
     #         if event.event_type == keyboard.KEY_DOWN and event.name == 'q':
     #             break
                 
-            
-
-    def execute(self, args):
-        self.current_args = args
+    def parse_args(self, args):
+        # Parse status argument
         status_mapping = {"solved": "AC",
                           "todo": "NOT_STARTED",
                           "attempted": "TRIED"}
-    
-        status_argument = next((status_arg for status_arg in status_mapping.keys() if getattr(args, status_arg)), None)
+        
+        status_argument = next((status_arg for status_arg in status_mapping.keys() if getattr(args, status_arg)))
         if status_argument:
             self.params['filters']['status'] = status_mapping[status_argument]
             
+        # Parse the page argument
+        self.page = getattr(args, 'page')
+        self.params['skip'] = self.limit * self.page - self.limit
+
+    def execute(self, args):
+        self.parse_args(args)
+        
         self.graphql_query = GraphQLQuery(self.query, self.params)
         self.result = self.leet_API.post_query(self.graphql_query)
         
@@ -101,7 +105,7 @@ class problemsetQuestionList(QueryTemplate):
             data[item.frontendQuestionId] = [item.title, retranslate[item.status], item.difficulty]
         table_data = [[id] + attributes for id, attributes in data.items()]
         
-        print(f'Total number of retrieved problems: {result_object.total}\n')
+        print(f'Total number of problems: {result_object.total}\n')
         print(tabulate(table_data, 
                     headers=['ID', 'Title', 'Status', 'Difficulty'], 
                     tablefmt='psql'))
