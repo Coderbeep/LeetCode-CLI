@@ -12,9 +12,10 @@ def main():
     problems_parser.add_argument('page', type=int, help='Page number', nargs='?', default=1)
     problems_parser.set_defaults(func=problemsetQuestionList)
     
-    problems_parser.add_argument('-s', '--solved', action='store_true', help='Display only solved problems.')
-    problems_parser.add_argument('-t', '--todo', action='store_true', help='Display only to do.')
-    problems_parser.add_argument('-a', '--attempted', action='store_true', help='Display only attempted problems.')
+    group = problems_parser.add_mutually_exclusive_group()
+    group.add_argument('-s', '--solved', action='store_true', help='Display only solved problems.')
+    group.add_argument('-t', '--todo', action='store_true', help='Display only to do.')
+    group.add_argument('-a', '--attempted', action='store_true', help='Display only attempted problems.')
     
     args = parser.parse_args()
     
