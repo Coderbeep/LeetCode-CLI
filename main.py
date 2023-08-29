@@ -9,6 +9,7 @@ def main():
     stats_parser.set_defaults(func=userProblemsSolved)
     
     problems_parser = subparsers.add_parser("problems", help="Display problems")
+    problems_parser.add_argument('page', type=int, help='Page number', nargs='?', default=1)
     problems_parser.set_defaults(func=problemsetQuestionList)
     
     problems_parser.add_argument('-s', '--solved', action='store_true', help='Display only solved problems.')
