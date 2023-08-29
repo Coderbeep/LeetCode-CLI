@@ -96,7 +96,7 @@ class problemsetQuestionList(QueryTemplate):
         
         retranslate = {'ac': 'Solved',
                        'notac': 'Attempted',
-                       None: ''}
+                       None: 'Not attempted'}
         
         for item in result_object.questions:
             data[item.frontendQuestionId] = [item.title, retranslate[item.status], item.difficulty]

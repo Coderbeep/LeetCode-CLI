@@ -42,11 +42,28 @@ class questionOfToday(QueryTemplate):
         self.result = None
         
     def execute(self, args):
-        
         self.graphql_query = GraphQLQuery(self.query, self.params)
         self.result = self.leet_API.post_query(self.graphql_query)
+        self.show()
+    
+    def show(self):
+        result_object = QueryResult.from_dict(self.result['data'])
         
-        print(self.result)
+        retranslate = {'ac': 'Solved',
+                       'notac': 'Attempted',
+                       None: 'Not attempted'}
+        
+        
+        question = result_object.question
+        
+        table_data = [[question.frontendQuestionId, question.title,
+                      retranslate[question.status], question.difficulty]]
+        
+        print(tabulate(table_data, 
+                       headers=['ID', 'Title', 'Status', 'Difficulty'],
+                       tablefmt='psql'))
+        
+
         
     
         
