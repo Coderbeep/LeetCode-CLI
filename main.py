@@ -17,6 +17,9 @@ def main():
     group.add_argument('-t', '--todo', action='store_true', help='Display only to do.')
     group.add_argument('-a', '--attempted', action='store_true', help='Display only attempted problems.')
     
+    today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
+    today_problem_parser.set_defaults(func=questionOfToday)
+    
     args = parser.parse_args()
     
     if hasattr(args, 'func'):

@@ -4,9 +4,6 @@ from dataclass_wizard import JSONWizard
 from tabulate import tabulate
 from graphql_query import GraphQLQuery
 from template import QueryTemplate
-import os 
-import keyboard
-import time
 
 @dataclass
 class Question():
