@@ -4,9 +4,8 @@ from tabulate import tabulate
 from graphql_query import GraphQLQuery
 from template import QueryTemplate
 from rich import print
-from rich.markdown import Markdown
-from markdownify import markdownify
-import re
+from content_markdown import LeetQuestionToSections
+
 
 @dataclass
 class Question():
@@ -94,12 +93,11 @@ class questionOfToday(QueryTemplate):
             titleSlug = result_object.question.titleSlug
             
             question_instance = questionContent(titleSlug)
-            question_content = question_instance.result
-            
-            markdown = markdownify(question_content)
-            
-            markdown = Markdown(markdown)
-            print(markdown)
+            html_question = question_instance.result
+
+            question_panels = LeetQuestionToSections(html_question)
+            for panel in question_panels:
+                print(panel)
 
         
     
