@@ -1,8 +1,9 @@
 from rich.markdown import Markdown
 from rich.panel import Panel
 from markdownify import markdownify
-import os
 from rich import print
+import os
+
 
 
 """ Turns the HTML code of the LeetCode question to sections. Then each section is 
@@ -19,15 +20,23 @@ class LeetQuestionToSections():
         self.panels = []
         self.__divide_into_sections()
         self.__sections_into_panels()
+        
+    def __add_breaks(self):
+        # Add the breaks into the Examples section
+        self.sections[1] = self.sections[1].replace('<strong>Output:</strong>', '<br><strong>Output:</strong>')
+        self.sections[1] = self.sections[1].replace('<strong>Explanation:</strong>', '<br><strong>Explanation:</strong>')
+        
 
     def __divide_into_sections(self):
         self.html = self.html.split('<p>&nbsp;</p>')
         for section in self.html:
             self.sections.append(section)
+            
+        self.__add_breaks()
     
     def __sections_into_panels(self):
         for section in self.sections:
-            section = markdownify(section)
+            section = markdownify(section, strip=['pre'])
             panel = Panel(Markdown(section), width=80)
             self.panels.append(panel)
                
