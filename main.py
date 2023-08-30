@@ -20,6 +20,10 @@ def main():
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=questionOfToday)
     
+    group_2 = today_problem_parser.add_mutually_exclusive_group()
+    group_2.add_argument('-l', '--link', action='store_true', help='Open the page in browser.')
+    group_2.add_argument('-c', '--contents', action='store_true', help='Display contents of the question in the terminal.')
+    
     args = parser.parse_args()
     
     if hasattr(args, 'func'):
