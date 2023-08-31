@@ -4,6 +4,9 @@ from dataclass_wizard import JSONWizard
 from tabulate import tabulate
 from graphql_query import GraphQLQuery
 from template import QueryTemplate
+from rich import print
+from rich.table import Table
+import rich
 
 @dataclass
 class DifficultyCount:
@@ -44,37 +47,25 @@ class userProblemsSolved(QueryTemplate):
     
     def show(self):
         result_object = QueryResult.from_dict(self.result['data'])
-        data = {}
 
-        # Add allQuestionsCount data
-        for item in result_object.allQuestionsCount:
-            if item.difficulty not in data:
-                data[item.difficulty] = [item.count, None, None]
-            else:
-                data[item.difficulty][0] = item.count
-
-        # Add problemsSolvedBeatsStats data
-        for item in result_object.matchedUser.problemsSolvedBeatsStats:
-            if item.difficulty not in data:
-                data[item.difficulty] = [None, item.percentage, None]
-            else:
-                data[item.difficulty][1] = item.percentage
-
-        # Add submitStatsGlobal data
-        for difficulty, submissions in result_object.matchedUser.submitStatsGlobal.items():
-            for submission in submissions:
-                if submission.difficulty not in data:
-                    data[submission.difficulty] = [None, None, submission.count]
-                else:
-                    data[submission.difficulty][2] = submission.count
-
-        # Convert dictionary to list of lists for tabulate
-        table_data = [[difficulty] + values for difficulty, values in data.items()]
-    
-        # Display data with tabulate
-        print(tabulate(table_data, 
-                    headers=['Difficulty', 'Question Count', 'Beaten Stats %', 'Submit Count'],
-                    tablefmt='psql'))
+        difficulties = [x.difficulty for x in result_object.allQuestionsCount]
+        question_counts = [x.count for x in result_object.allQuestionsCount]
+        beaten_stats = [x.percentage for x in result_object.matchedUser.problemsSolvedBeatsStats]
+        beaten_stats.insert(0, None)
+        submit_counts = []
+        for diff, subm in result_object.matchedUser.submitStatsGlobal.items():
+            for submission in subm:
+                submit_counts.append(submission.count)
+        
+        table = Table(title='coderbeep', box=rich.box.ROUNDED, width=100)
+        table.add_column('Difficulty')
+        table.add_column('Question Count')
+        table.add_column('Beaten Stats (%)')
+        table.add_column('Submit Count')
+        
+        for diff, count, stats, subm in zip(difficulties, question_counts, beaten_stats, submit_counts):
+            table.add_row(diff, str(count), str(stats), str(subm)) 
+        print(table)
 
     
     
