@@ -43,7 +43,7 @@ class LeetQuestionToSections():
     def __sections_into_panels(self):
         for section in self.sections:
             section = markdownify(section, strip=['pre'])
-            panel = Panel(Markdown(section), width=80)
+            panel = Panel(Markdown(section), width=100)
             self.panels.append(panel)
                
     def __remove_empty_lines(self, section) -> str:
