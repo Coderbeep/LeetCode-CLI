@@ -83,7 +83,7 @@ class questionOfToday(QueryTemplate):
                        None: 'Not attempted'}
         question = self.result.question
         
-        table = Table(box=rich.box.ROUNDED)
+        table = Table(box=rich.box.ROUNDED, width=100)
         table.add_column('ID')
         table.add_column('Title')
         table.add_column('Status')
