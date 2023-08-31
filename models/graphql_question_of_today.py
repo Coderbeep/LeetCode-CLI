@@ -5,8 +5,10 @@ from graphql_query import GraphQLQuery
 from template import QueryTemplate
 from rich import print
 from content_markdown import LeetQuestionToSections
+from rich.table import Table
+import rich
 
-
+""" TODO: emojis in 'status' and 'difficulty'"""
 @dataclass
 class Question():
     difficulty: str
@@ -63,8 +65,10 @@ class questionOfToday(QueryTemplate):
         
     def execute(self, args):
         self.parse_args(args)
+        
         self.graphql_query = GraphQLQuery(self.query, self.params)
         self.result = self.leet_API.post_query(self.graphql_query)
+        self.result = QueryResult.from_dict(self.result['data'])
         self.show()
         
     def parse_args(self, args):
@@ -73,24 +77,26 @@ class questionOfToday(QueryTemplate):
         if getattr(args, 'contents'):
             self.contentFlag = True
     
-    def show(self):
-        result_object = QueryResult.from_dict(self.result['data'])
+    def show_info_table(self):
         retranslate = {'ac': 'Solved',
                        'notac': 'Attempted',
                        None: 'Not attempted'}
+        question = self.result.question
         
+        table = Table(box=rich.box.ROUNDED)
+        table.add_column('ID')
+        table.add_column('Title')
+        table.add_column('Status')
+        table.add_column('Difficulty')
         
-        question = result_object.question
+        table.add_row(question.frontendQuestionId, question.title,
+                      retranslate[question.status], question.difficulty)
         
-        table_data = [[question.frontendQuestionId, question.title,
-                      retranslate[question.status], question.difficulty]]
-        
-        print(tabulate(table_data, 
-                       headers=['ID', 'Title', 'Status', 'Difficulty'],
-                       tablefmt='psql'))
-        
+        print(table)
+    
+    def show(self):
         if self.contentFlag:
-            titleSlug = result_object.question.titleSlug
+            titleSlug = self.result.question.titleSlug
             
             question_instance = questionContent(titleSlug)
             html_question = question_instance.result
@@ -98,6 +104,11 @@ class questionOfToday(QueryTemplate):
             question_panels = LeetQuestionToSections(html_question)
             for panel in question_panels:
                 print(panel)
+        elif self.linkFlag:
+            self.show_info_table()
+            print('Link to the problem: ')
+        else:
+            self.show_info_table()
 
         
     
