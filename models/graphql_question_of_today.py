@@ -7,6 +7,7 @@ from rich import print
 from content_markdown import LeetQuestionToSections
 from rich.table import Table
 import rich
+from .styles import LeetTable
 
 """ TODO: emojis in 'status' and 'difficulty'"""
 @dataclass
@@ -83,7 +84,7 @@ class questionOfToday(QueryTemplate):
                        None: 'Not attempted'}
         question = self.result.question
         
-        table = Table(box=rich.box.ROUNDED, width=100)
+        table = LeetTable()
         table.add_column('ID')
         table.add_column('Title')
         table.add_column('Status')

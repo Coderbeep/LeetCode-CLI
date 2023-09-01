@@ -7,6 +7,7 @@ from template import QueryTemplate
 from rich import print
 from rich.table import Table
 import rich
+from .styles import LeetTable
 
 @dataclass
 class DifficultyCount:
@@ -57,7 +58,7 @@ class userProblemsSolved(QueryTemplate):
             for submission in subm:
                 submit_counts.append(submission.count)
         
-        table = Table(title='coderbeep', box=rich.box.ROUNDED, width=100)
+        table = LeetTable(title='coderbeep')
         table.add_column('Difficulty')
         table.add_column('Question Count')
         table.add_column('Beaten Stats (%)')
