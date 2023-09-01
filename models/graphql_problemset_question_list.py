@@ -4,7 +4,10 @@ from dataclass_wizard import JSONWizard
 from tabulate import tabulate
 from graphql_query import GraphQLQuery
 from template import QueryTemplate
+from rich import print
+from .styles import LeetTable
 
+# TODO: restrict the page number
 @dataclass
 class Question():
     title: str
@@ -43,36 +46,19 @@ class problemsetQuestionList(QueryTemplate):
         self.graphql_query = None
         self.result = None
         self.page : int = 1
-        
-    # def move_next(self):
-    #     self.page += 1
-    #     self.params['skip'] += self.limit
-    #     self.execute(self.current_args)
-        
-    # def move_previous(self):
-    #     if self.page > 1:
-    #         self.page -= 1
-    #         self.params['skip'] -= self.limit
-    #         self.execute(self.current_args)
-            
-    # def handle_keyboard_input(self):
-    #     while True:
-    #         event = keyboard.read_event(suppress=True)
-    #         if event.event_type == keyboard.KEY_DOWN and event.name == 'n':
-    #             self.move_next()
-    #         if event.event_type == keyboard.KEY_DOWN and event.name == 'N':
-    #             self.move_previous()
-    #         if event.event_type == keyboard.KEY_DOWN and event.name == 'q':
-    #             break
                 
     def parse_args(self, args):
         # Parse status argument
         status_mapping = {"solved": "AC",
                           "todo": "NOT_STARTED",
                           "attempted": "TRIED"}
-        
-        status_argument = next((status_arg for status_arg in status_mapping.keys() if getattr(args, status_arg)))
-        if status_argument:
+        status_argument = None
+        for status_arg in status_mapping.keys():
+            if getattr(args, status_arg):
+                status_argument = status_arg
+                break
+            
+        if status_argument is not None:
             self.params['filters']['status'] = status_mapping[status_argument]
             
         # Parse the page argument
@@ -86,27 +72,24 @@ class problemsetQuestionList(QueryTemplate):
         self.result = self.leet_API.post_query(self.graphql_query)
         
         self.show()
-        # self.handle_keyboard_input()
         
     def show(self):
-        # os.system('cls' if os.name == 'nt' else 'clear')
         result_object = QueryResult.from_dict(self.result['data'])
-        
-        data = {}
-        
         retranslate = {'ac': 'Solved',
                        'notac': 'Attempted',
                        None: 'Not attempted'}
         
-        for item in result_object.questions:
-            data[item.frontendQuestionId] = [item.title, retranslate[item.status], item.difficulty]
-        table_data = [[id] + attributes for id, attributes in data.items()]
-        
-        print(f'Total number of problems: {result_object.total}\n')
-        print(tabulate(table_data, 
-                    headers=['ID', 'Title', 'Status', 'Difficulty'], 
-                    tablefmt='psql'))
-        
         displayed : int = self.limit * self.page if self.limit * self.page < result_object.total else result_object.total
         
-        print(f"Page #{self.page} / ({displayed}/{result_object.total})")
+        
+        table = LeetTable(title=f'Total number of problems retrieved: {result_object.total}\n',
+                            caption=f"Page #{self.page} / ({displayed}/{result_object.total})")
+        
+        table.add_column('ID')
+        table.add_column('Title')
+        table.add_column('Status')
+        table.add_column('Difficulty')
+        for item in result_object.questions:
+            table.add_row(item.frontendQuestionId, item.title, retranslate[item.status], item.difficulty)
+        print(table)
+        
