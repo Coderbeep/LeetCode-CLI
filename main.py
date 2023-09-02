@@ -1,6 +1,16 @@
 import argparse
 from models import *
 
+def positive_integer(value):
+    try:
+        ivalue = int(value)
+        if ivalue > 0:
+            return ivalue
+        else:
+            raise argparse.ArgumentTypeError(f"{value} is not a valid integer")
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{value} is not a valid integer")
+
 def main():
     parser = argparse.ArgumentParser(description="Leet CLI")
     subparsers = parser.add_subparsers(title="Commands", dest="command")
@@ -9,7 +19,7 @@ def main():
     stats_parser.set_defaults(func=userProblemsSolved)
     
     problems_parser = subparsers.add_parser("problems", help="Display problems")
-    problems_parser.add_argument('page', type=int, help='Page number', nargs='?', default=1)
+    problems_parser.add_argument('page', type=positive_integer, help='Page number', nargs='?', default=1)
     problems_parser.set_defaults(func=problemsetQuestionList)
     
     group = problems_parser.add_mutually_exclusive_group()
