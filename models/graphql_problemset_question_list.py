@@ -1,13 +1,5 @@
-from typing import Any, List
-from dataclasses import dataclass
-from dataclass_wizard import JSONWizard
-from tabulate import tabulate
-from graphql_query import GraphQLQuery
-from template import QueryTemplate
-from rich import print
-from .styles import LeetTable
+from . import *
 
-# TODO: restrict the page number
 @dataclass
 class Question():
     title: str

@@ -1,13 +1,4 @@
-from dataclasses import dataclass
-from dataclass_wizard import JSONWizard
-from tabulate import tabulate
-from graphql_query import GraphQLQuery
-from template import QueryTemplate
-from rich import print
-from content_markdown import LeetQuestionToSections
-from rich.table import Table
-import rich
-from .styles import LeetTable
+from . import *
 
 """ TODO: emojis in 'status' and 'difficulty'"""
 @dataclass
