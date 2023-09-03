@@ -1,8 +1,8 @@
 import argparse
 from models import *
+from configuration import check_session
 
 # TODO: leet stats for nicknames
-# TODO: configuration file with nickname, session etc.
 # TODO: add a command to open the question in browser
 # TODO: add a command to open the question in editor
 # TODO: submit the solution from the terminal
@@ -50,4 +50,5 @@ def main():
 
     
 if __name__ == '__main__':
-    main()
+    if check_session():
+        main()
