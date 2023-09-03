@@ -30,11 +30,28 @@ class QueryResult(JSONWizard):
 class userProblemsSolved(QueryTemplate):
     def __init__(self):
         super().__init__()
-        self.params = {'username': 'coderbeep'}
+        self.params = {'username': ''}
+        self.graphql_query = None
+        self.result = None
+        
+        
+    def parse_args(self, args):
+        if getattr(args, 'username'):
+            self.params['username'] = getattr(args, 'username')
+        else:
+            username = self.config.user_config.get('username')
+            if username:
+                self.params['username'] = self.config.user_config.get('username')
+            else:
+                raise TypeError("Username not provided and not configured.")
+            pass
+        
+    def execute(self, args):
+        self.parse_args(args)
+        
         self.graphql_query = GraphQLQuery(self.query, self.params)
         self.result = self.leet_API.post_query(self.graphql_query)
         
-    def execute(self, args):
         self.show()
     
     def show(self):

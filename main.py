@@ -22,6 +22,7 @@ def main():
     subparsers = parser.add_subparsers(title="Commands", dest="command")
     
     stats_parser = subparsers.add_parser("stats", help="Display statistics")
+    stats_parser.add_argument('username', type=str, help='User nickname', nargs='?')
     stats_parser.set_defaults(func=userProblemsSolved)
     
     problems_parser = subparsers.add_parser("problems", help="Display problems")

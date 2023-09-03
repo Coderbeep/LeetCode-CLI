@@ -1,6 +1,16 @@
 import requests
 import yaml
 
+class UserConfig():
+    def __init__(self) -> None:
+        self.path = 'config.yaml'
+        with open(self.path, 'r') as yaml_file:
+            self.data = yaml.safe_load(yaml_file)
+        
+    def get(self, key):
+        return self.data['user_data'].get(key)
+
+
 def check_session():
     with open('config.yaml', 'r') as yaml_file:
         data = yaml.safe_load(yaml_file)
@@ -18,13 +28,12 @@ def check_session():
     
     session_id can be found in the web browser cookies of https://leetcode.com/
     
-    The default session_id is taken from the configuration file. 
-    """
-    
+    The default session_id is taken from the configuration file. """
 
 class Configuration():
     def __init__(self, session_id: str = ''):
         self.host = 'https://leetcode.com/'
+        self.user_config = UserConfig()
         if session_id:
             self.session_id = session_id
         else:
@@ -56,8 +65,5 @@ class Configuration():
         return self._cookies
     
     def load_config(self):
-        with open('config.yaml', 'r') as yaml_file:
-            data = yaml.safe_load(yaml_file)
-        
-        self.session_id = data['user_data']['session_id']
+        self.session_id = self.user_config.get('session_id')
         
