@@ -3,9 +3,7 @@ from rich.panel import Panel
 from markdownify import markdownify
 from rich import print
 import os
-""" TODO: image handling?
-    TODO: uniform style for the whole client """
-
+# TODO: handle images
 
 """ Turns the HTML code of the LeetCode question to sections. Then each section is 
     altered to Markdown and later into the Rich Panel. 

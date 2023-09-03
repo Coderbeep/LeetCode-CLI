@@ -1,6 +1,12 @@
 import argparse
 from models import *
 
+# TODO: leet stats for nicknames
+# TODO: configuration file with nickname, session etc.
+# TODO: add a command to open the question in browser
+# TODO: add a command to open the question in editor
+# TODO: submit the solution from the terminal
+
 def positive_integer(value):
     try:
         ivalue = int(value)
