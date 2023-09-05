@@ -31,15 +31,22 @@ def main():
     stats_parser.add_argument('username', type=str, help='User nickname', nargs='?')
     stats_parser.set_defaults(func=userProblemsSolved)
     
-    problems_parser = subparsers.add_parser("problems", help="Display problems")
-    problems_parser.add_argument('page', type=positive_integer, help='Page number', nargs='?', default=1)
-    problems_parser.set_defaults(func=problemsetQuestionList)
+    problems_list_parser = subparsers.add_parser("list", help="Display problem list")
+    problems_list_parser.add_argument('page', type=positive_integer, help='Page number', nargs='?', default=1)
+    problems_list_parser.set_defaults(func=problemsetQuestionList)
     
-    group = problems_parser.add_mutually_exclusive_group()
+    group = problems_list_parser.add_mutually_exclusive_group()
     group.add_argument('-s', '--solved', action='store_true', help='Display only solved problems.')
     group.add_argument('-t', '--todo', action='store_true', help='Display only to do.')
     group.add_argument('-a', '--attempted', action='store_true', help='Display only attempted problems.')
     
+    problem_parser = subparsers.add_parser('problem', help="Display problem")
+    problem_parser.set_defaults(func=problemByIDSlug)
+    group_3 = problem_parser.add_mutually_exclusive_group(required=True)
+    group_3.add_argument('-i', '--id', type=positive_integer, help='Problem ID of the problem')
+    group_3.add_argument('-s', '--slug', type=str, help='Title slug of the problem.')
+    
+
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=questionOfToday)
     

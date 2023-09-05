@@ -18,3 +18,9 @@ class LeetAPI():
                                  json=query.to_dict(),
                                  cookies=self.config.cookies)
         return response.json()
+
+    def get_request(self, url):
+        response = requests.get(url=url,
+                                headers=self.config.headers,
+                                cookies=self.config.cookies)
+        return response.json()

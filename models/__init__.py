@@ -15,7 +15,8 @@ from template import QueryTemplate
 
 from .styles import LeetTable
 
-
+from models.graphql_question_content import questionContent
 from models.graphql_problemset_question_list import problemsetQuestionList
 from models.graphql_question_of_today import questionOfToday
 from models.graphql_user_problems_solved import userProblemsSolved
+from models.problem_by_id_slug import problemByIDSlug

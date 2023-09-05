@@ -30,20 +30,7 @@ class QueryResult(JSONWizard):
                              difficulty=question.get('difficulty'),
                              frontendQuestionId=question.get('frontendQuestionId'))
         
-        return cls(date=date, userStatus=userStatus, link=link, question=question)
-
-class questionContent(QueryTemplate):
-    def __init__(self, titleSlug):
-        super().__init__()
-        self.params = {'titleSlug': titleSlug}
-        self.graphql_query = None
-        self.result = None
-        self.execute()
-    
-    def execute(self):
-        self.graphql_query = GraphQLQuery(self.query, self.params)
-        self.result = self.leet_API.post_query(self.graphql_query)['data']['question']['content']
-    
+        return cls(date=date, userStatus=userStatus, link=link, question=question)  
 
 class questionOfToday(QueryTemplate):
     def __init__(self):
@@ -91,11 +78,8 @@ class questionOfToday(QueryTemplate):
             titleSlug = self.result.question.titleSlug
             
             question_instance = questionContent(titleSlug)
-            html_question = question_instance.result
-
-            question_panels = LeetQuestionToSections(html_question)
-            for panel in question_panels:
-                print(panel)
+            print(question_instance)
+            
         elif self.browserFlag:
             self.show_info_table()
             link = self.config.host + self.result.link
@@ -106,4 +90,3 @@ class questionOfToday(QueryTemplate):
 
         
     
-        

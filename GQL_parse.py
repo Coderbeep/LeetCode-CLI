@@ -30,6 +30,8 @@ class Parser():
                 if line.startswith('query ' + query_name):
                     query += line
                     break
+            if not query:
+                return None
             for line in file:
                 if line.startswith('}'):
                     query += line
