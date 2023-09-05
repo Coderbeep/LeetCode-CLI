@@ -1,6 +1,6 @@
 from . import *
 
-""" TODO: emojis in 'status' and 'difficulty'"""
+
 @dataclass
 class Question():
     difficulty: str
