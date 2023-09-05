@@ -46,7 +46,7 @@ def check_session():
 
 class Configuration():
     def __init__(self, session_id: str = ''):
-        self.host = 'https://leetcode.com/'
+        self.host = 'https://leetcode.com'
         self.user_config = UserConfig()
         if session_id:
             self.session_id = session_id

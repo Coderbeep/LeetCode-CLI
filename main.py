@@ -2,10 +2,11 @@ import argparse
 from models import *
 from configuration import check_session, UserConfig
 
-# TODO: leet stats for nicknames
-# TODO: add a command to open the question in browser
 # TODO: add a command to open the question in editor
 # TODO: submit the solution from the terminal
+# TODO: add a command to show the solution in the terminal
+# TODO: add a command to show the solution in the browser
+# TODO: emojis 
 
 def positive_integer(value):
     try:
@@ -43,7 +44,7 @@ def main():
     today_problem_parser.set_defaults(func=questionOfToday)
     
     group_2 = today_problem_parser.add_mutually_exclusive_group()
-    group_2.add_argument('-l', '--link', action='store_true', help='Open the page in browser.')
+    group_2.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
     group_2.add_argument('-c', '--contents', action='store_true', help='Display contents of the question in the terminal.')
     
     args = parser.parse_args()

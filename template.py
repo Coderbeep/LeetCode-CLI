@@ -1,6 +1,7 @@
 from GQL_parse import Parser
 from configuration import Configuration
 from leet_api import LeetAPI
+import os
 
 class QueryTemplate():
     def __init__(self):
@@ -30,4 +31,9 @@ class QueryTemplate():
     def execute(self):
         """ Method to handle the args passed by the 
             argument parser. """
+        pass
+
+    def open_in_browser(self, link):
+        """ Method to open the question in browser. """
+        os.system(f'explorer {link}')
         pass

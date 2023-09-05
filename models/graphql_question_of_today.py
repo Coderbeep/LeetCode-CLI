@@ -53,7 +53,7 @@ class questionOfToday(QueryTemplate):
         self.result = None
         
         self.contentFlag = False
-        self.linkFlag = False
+        self.browserFlag = False
         
     def execute(self, args):
         self.parse_args(args)
@@ -64,8 +64,8 @@ class questionOfToday(QueryTemplate):
         self.show()
         
     def parse_args(self, args):
-        if getattr(args, 'link'): 
-            self.linkFlag = True
+        if getattr(args, 'browser'): 
+            self.browserFlag = True
         if getattr(args, 'contents'):
             self.contentFlag = True
     
@@ -96,9 +96,11 @@ class questionOfToday(QueryTemplate):
             question_panels = LeetQuestionToSections(html_question)
             for panel in question_panels:
                 print(panel)
-        elif self.linkFlag:
+        elif self.browserFlag:
             self.show_info_table()
-            print('Link to the problem: ')
+            link = self.config.host + self.result.link
+            print(f'Link to the problem: {link}')
+            self.open_in_browser(link)
         else:
             self.show_info_table()
 
