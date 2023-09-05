@@ -1,6 +1,6 @@
 import argparse
 from models import *
-from configuration import check_session
+from configuration import check_session, UserConfig
 
 # TODO: leet stats for nicknames
 # TODO: add a command to open the question in browser
@@ -20,6 +20,11 @@ def positive_integer(value):
 def main():
     parser = argparse.ArgumentParser(description="Leet CLI")
     subparsers = parser.add_subparsers(title="Commands", dest="command")
+    
+    config_parser = subparsers.add_parser('config', help="Configure the CLI")
+    config_parser.add_argument('config_key', type=str, help='Key to change')
+    config_parser.add_argument('config_value', type=str, help='Value to set') 
+    config_parser.set_defaults(func=UserConfig)
     
     stats_parser = subparsers.add_parser("stats", help="Display statistics")
     stats_parser.add_argument('username', type=str, help='User nickname', nargs='?')

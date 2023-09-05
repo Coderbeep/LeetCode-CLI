@@ -10,7 +10,21 @@ class UserConfig():
     def get(self, key):
         return self.data['user_data'].get(key)
 
+    def dump_key(self, key, value):
+        self.data['user_data'][key] = value
+        
+        with open('config.yaml', 'w') as yaml_file:
+            yaml.dump(self.data, yaml_file, default_flow_style=False)
 
+    def execute(self, args):
+        if args.config_key not in self.data['user_data']:
+            print(f"Invalid key: {args.config_key}")
+            return
+        else:
+            if getattr(args, 'config_key') and getattr(args, 'config_value'):
+                self.dump_key(args.config_key, args.config_value)
+                print('Configuration updated successfully.')
+                
 def check_session():
     with open('config.yaml', 'r') as yaml_file:
         data = yaml.safe_load(yaml_file)

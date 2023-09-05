@@ -3,11 +3,11 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+import sys
 import rich
 from dataclass_wizard import JSONWizard
 from rich import print
 from rich.table import Table
-from tabulate import tabulate
 
 from content_markdown import LeetQuestionToSections
 from graphql_query import GraphQLQuery

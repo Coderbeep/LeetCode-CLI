@@ -1,4 +1,5 @@
 from . import *
+import sys
 
 @dataclass
 class DifficultyCount:
@@ -43,8 +44,8 @@ class userProblemsSolved(QueryTemplate):
             if username:
                 self.params['username'] = self.config.user_config.get('username')
             else:
-                raise TypeError("Username not provided and not configured.")
-            pass
+                print("Username neither provided nor configured. Head to --help.")
+                sys.exit(1)
         
     def execute(self, args):
         self.parse_args(args)
