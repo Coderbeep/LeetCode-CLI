@@ -20,3 +20,4 @@ from models.graphql_problemset_question_list import problemsetQuestionList
 from models.graphql_question_of_today import questionOfToday
 from models.graphql_user_problems_solved import userProblemsSolved
 from models.problem_by_id_slug import problemByIDSlug
+from models.graphql_question_title import questionTitle

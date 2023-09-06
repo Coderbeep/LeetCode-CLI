@@ -2,6 +2,7 @@ import argparse
 from models import *
 from configuration import check_session, UserConfig
 
+# TODO: handle the questionTitle query
 # TODO: question title and difficulty above the introduction panel
 # TODO: add a command to open the question in editor
 # TODO: submit the solution from the terminal

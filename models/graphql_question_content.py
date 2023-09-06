@@ -16,7 +16,6 @@ class questionContent(QueryTemplate):
             print("Cannot find the question with specified title slug. Please try again.")
             sys.exit(1)
         else:
-            print(self.result['data']['question'])
             self.result = self.result['data']['question']['content']
     
     def __repr__(self):
