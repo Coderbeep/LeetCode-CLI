@@ -8,12 +8,15 @@ import rich
 from dataclass_wizard import JSONWizard
 from rich import print
 from rich.table import Table
+from rich.console import Console
+console = Console()
 
 from content_markdown import LeetQuestionToSections
 from graphql_query import GraphQLQuery
 from template import QueryTemplate
 
 from .styles import LeetTable
+from .styles import ALERT
 
 from models.graphql_question_content import questionContent
 from models.graphql_problemset_question_list import problemsetQuestionList

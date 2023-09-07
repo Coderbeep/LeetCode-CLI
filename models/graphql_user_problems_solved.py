@@ -44,7 +44,7 @@ class userProblemsSolved(QueryTemplate):
             if username:
                 self.params['username'] = self.config.user_config.get('username')
             else:
-                print("Username neither provided nor configured. Head to --help.")
+                console.print("Username neither provided nor configured. Head to --help.", style=ALERT)
                 sys.exit(1)
         
     def execute(self, args):

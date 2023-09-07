@@ -9,7 +9,6 @@ from configuration import check_session, UserConfig
 # TODO: submit the solution from the terminal
 # TODO: add a command to show the solution in the terminal
 # TODO: add a command to show the solution in the browser
-# TODO: emojis 
 
 def positive_integer(value):
     try:

@@ -15,6 +15,8 @@ status_retranslate = {'Solved': '✅ Solved',
                       'Attempted': '🟡 Attempted',
                       'Not attempted': '❌ Not attempted'}
 
+ALERT = Style(color='red', bold=True)
+
 class LeetTable(Table):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

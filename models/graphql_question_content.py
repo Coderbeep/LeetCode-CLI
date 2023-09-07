@@ -13,7 +13,7 @@ class questionContent(QueryTemplate):
         self.graphql_query = GraphQLQuery(self.query, self.params)
         self.result = self.leet_API.post_query(self.graphql_query)
         if 'errors' in self.result:
-            print("Cannot find the question with specified title slug. Please try again.")
+            console.print("Cannot find the question with specified title slug. Please try again.", style=ALERT)
             sys.exit(1)
         else:
             self.result = self.result['data']['question']['content']

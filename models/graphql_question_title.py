@@ -1,7 +1,5 @@
 from . import *
 
-# This is the output: {'data': {'question': {'questionId': '1', 'questionFrontendId': '1', 'title': 'Two Sum', 'titleSlug': 'two-sum', 'isPaidOnly': False, 'difficulty': 'Easy', 'likes': 51113, 'dislikes': 1649, 'categoryTitle': 'Algorithms'}}}
-# write a dataclass for this
 @dataclass
 class Question():
     questionId: str

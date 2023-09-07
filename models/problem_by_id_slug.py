@@ -14,7 +14,7 @@ class problemByIDSlug(QueryTemplate):
                     self.title_slug = x['stat']['question__title_slug']
                     break
             if self.title_slug is None:
-                print("Invalid ID have been provided. Please try again.")
+                console.print("Invalid ID have been provided. Please try again.", style=ALERT)
                 sys.exit(1)
         elif getattr(args, 'slug'):
             self.title_slug = args.slug
