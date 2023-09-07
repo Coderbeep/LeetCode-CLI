@@ -35,12 +35,13 @@ class QueryResult(JSONWizard):
 class questionOfToday(QueryTemplate):
     def __init__(self):
         super().__init__()
+        # Instance specific variables
+        self.contentFlag = False
+        self.browserFlag = False
+        
         self.params = {}
         self.graphql_query = None
         self.result = None
-        
-        self.contentFlag = False
-        self.browserFlag = False
         
     def execute(self, args):
         self.parse_args(args)
@@ -75,8 +76,10 @@ class questionOfToday(QueryTemplate):
     
     def show(self):
         if self.contentFlag:
+            self.show_info_table()
+            print('\n\n\n')
             titleSlug = self.result.question.titleSlug
-            
+        
             question_instance = questionContent(titleSlug)
             print(question_instance)
             
