@@ -7,7 +7,7 @@ from rich.text import Text
 from rich import print
 import rich
 
-difficulty_translate = {'Easy': '🟢 Easy', 
+difficulty_retranslate = {'Easy': '🟢 Easy', 
                         'Medium': '🟡 Medium',
                         'Hard': '🔴 Hard'}
 
@@ -36,7 +36,7 @@ class LeetTable(Table):
         if self.difficulty_column_index or self.status_column_index:
             renderables = list(renderables)
             if self.difficulty_column_index is not None:
-                renderables[self.difficulty_column_index] = difficulty_translate[renderables[self.difficulty_column_index]]
+                renderables[self.difficulty_column_index] = difficulty_retranslate[renderables[self.difficulty_column_index]]
             if self.status_column_index is not None:
                 renderables[self.status_column_index] = status_retranslate[renderables[self.status_column_index]]
             renderables = tuple(renderables)

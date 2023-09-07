@@ -1,5 +1,7 @@
 import requests
 import yaml
+import sys
+from rich import print
 
 class UserConfig():
     def __init__(self) -> None:
@@ -45,6 +47,8 @@ def check_session():
     The default session_id is taken from the configuration file. """
 
 class Configuration():
+    session_checked =  False
+    
     def __init__(self, session_id: str = ''):
         self.host = 'https://leetcode.com'
         self.user_config = UserConfig()
@@ -58,7 +62,31 @@ class Configuration():
         self._headers: dict = {'x-csrftoken': self._csrf_cookie,
                                'Referer': self.host}
         self._cookies: dict = {'csrftoken': self._csrf_cookie,
-                               'LEETCODE_SESSION': self.session_id}       
+                               'LEETCODE_SESSION': self.session_id}  
+        
+        if not Configuration.session_checked:
+            self.check_session_validity() 
+    
+    def check_session_validity(self):
+        QUERY = """ query
+                {
+                    user {
+                    username
+                    isCurrentUserPremium
+                    }
+                }
+                """
+        PARAMETERS = {}
+        response = requests.post(url="https://leetcode.com/graphql",
+                                    headers=self.headers,
+                                    json={'query': QUERY, 'variables': PARAMETERS},
+                                    cookies=self.cookies)
+        if response.json()['data']['user']:
+            Configuration.session_checked = True
+        else:
+            print('[red]Invalid session_id. Please update the session_id in the config.yaml file or use the config command.[/red]')
+            sys.exit(1)
+                                 
     
     @property
     def csrf_cookie(self) -> str:
