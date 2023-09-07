@@ -91,7 +91,7 @@ query questionContent($titleSlug: String!) {
   }
 }
 
-query questionTitle($titleSlug: String!) {
+query questionInfoTable($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     questionId
     questionFrontendId
@@ -102,6 +102,7 @@ query questionTitle($titleSlug: String!) {
     likes
     dislikes
     categoryTitle
+    status
   }
 }
     

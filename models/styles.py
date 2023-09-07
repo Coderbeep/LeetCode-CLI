@@ -11,9 +11,9 @@ difficulty_retranslate = {'Easy': '🟢 Easy',
                         'Medium': '🟡 Medium',
                         'Hard': '🔴 Hard'}
 
-status_retranslate = {'Solved': '✅ Solved',
-                      'Attempted': '🟡 Attempted',
-                      'Not attempted': '❌ Not attempted'}
+status_retranslate = {'ac': '✅ Solved',
+                      'notac': '🟡 Attempted',
+                      None: '❌ Not attempted'}
 
 ALERT = Style(color='red', bold=True)
 

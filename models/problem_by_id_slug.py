@@ -19,5 +19,7 @@ class problemByIDSlug(QueryTemplate):
         elif getattr(args, 'slug'):
             self.title_slug = args.slug
         
-        QUESTION = questionContent(self.title_slug)
-        print(QUESTION)
+        question_info_table = questionInfoTable(self.title_slug)
+        question_info_table.show()
+        question_content = questionContent(self.title_slug)
+        question_content.show()

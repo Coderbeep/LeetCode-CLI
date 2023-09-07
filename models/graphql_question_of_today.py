@@ -58,9 +58,7 @@ class questionOfToday(QueryTemplate):
             self.contentFlag = True
     
     def show_info_table(self):
-        retranslate = {'ac': 'Solved',
-                       'notac': 'Attempted',
-                       None: 'Not attempted'}
+
         question = self.result.question
         
         table = LeetTable()
@@ -70,7 +68,7 @@ class questionOfToday(QueryTemplate):
         table.add_column('Difficulty')
         
         table.add_row(question.frontendQuestionId, question.title,
-                      retranslate[question.status], question.difficulty)
+                      question.status, question.difficulty)
         
         print(table)
     
@@ -80,8 +78,8 @@ class questionOfToday(QueryTemplate):
             print('\n\n\n')
             titleSlug = self.result.question.titleSlug
         
-            question_instance = questionContent(titleSlug)
-            print(question_instance)
+            question_content = questionContent(titleSlug)
+            question_content.show()
             
         elif self.browserFlag:
             self.show_info_table()

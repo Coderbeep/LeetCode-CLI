@@ -52,22 +52,21 @@ class userProblemsSolved(QueryTemplate):
         
         self.graphql_query = GraphQLQuery(self.query, self.params)
         self.result = self.leet_API.post_query(self.graphql_query)
+        self.result = QueryResult.from_dict(self.result['data'])
         
         self.show()
     
     def show(self):
-        result_object = QueryResult.from_dict(self.result['data'])
-
-        difficulties = [x.difficulty for x in result_object.allQuestionsCount]
-        question_counts = [x.count for x in result_object.allQuestionsCount]
-        beaten_stats = [x.percentage for x in result_object.matchedUser.problemsSolvedBeatsStats]
+        difficulties = [x.difficulty for x in self.result.allQuestionsCount]
+        question_counts = [x.count for x in self.result.allQuestionsCount]
+        beaten_stats = [x.percentage for x in self.result.matchedUser.problemsSolvedBeatsStats]
         beaten_stats.insert(0, None)
         submit_counts = []
-        for diff, subm in result_object.matchedUser.submitStatsGlobal.items():
+        for diff, subm in self.result.matchedUser.submitStatsGlobal.items():
             for submission in subm:
                 submit_counts.append(submission.count)
         
-        table = LeetTable(title='coderbeep')
+        table = LeetTable(title=self.params['username'] + "'s Leetcode Stats")
         table.add_column('Difficulty')
         table.add_column('Question Count')
         table.add_column('Beaten Stats (%)')

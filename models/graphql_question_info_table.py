@@ -11,6 +11,7 @@ class Question():
     likes: int
     dislikes: int
     categoryTitle: str
+    status: str
     
     @classmethod
     def from_dict(cls, data):
@@ -23,10 +24,11 @@ class Question():
         likes = data['question']['likes']
         dislikes = data['question']['dislikes']
         categoryTitle = data['question']['categoryTitle']
+        status = data['question']['status']
         
-        return cls(questionId=questionId, questionFrontendId=questionFrontendId, title=title, titleSlug=titleSlug, isPaidOnly=isPaidOnly, difficulty=difficulty, likes=likes, dislikes=dislikes, categoryTitle=categoryTitle)
+        return cls(questionId=questionId, questionFrontendId=questionFrontendId, title=title, titleSlug=titleSlug, isPaidOnly=isPaidOnly, difficulty=difficulty, likes=likes, dislikes=dislikes, categoryTitle=categoryTitle, status=status)
 
-class questionTitle(QueryTemplate):
+class questionInfoTable(QueryTemplate):
     def __init__(self, titleSlug: str = None):
         super().__init__()
         self.params = {'titleSlug': titleSlug}
@@ -40,21 +42,21 @@ class questionTitle(QueryTemplate):
     
     def execute(self):
         self.graphql_query = GraphQLQuery(self.query, self.params)
-        query_result = self.leet_API.post_query(self.graphql_query)
-        self.result = Question.from_dict(query_result['data'])
+        self.result = self.leet_API.post_query(self.graphql_query)
+        self.result = Question.from_dict(self.result['data'])
     
     def format_table(self):
-        table = LeetTable()
-        table.add_column('ID')
-        table.add_column('Title')
-        table.add_column('Difficulty')
-        table.add_column('categoryTitle')
+        self.table = LeetTable()
+        self.table.add_column('ID')
+        self.table.add_column('Title')
+        self.table.add_column('Difficulty')
+        self.table.add_column('Status')
+        self.table.add_column('categoryTitle')
         
         q = self.result
         
-        table.add_row(q.questionFrontendId, q.title, q.difficulty, q.categoryTitle)
-        print(table)
+        self.table.add_row(q.questionFrontendId, q.title, q.difficulty, q.status, q.categoryTitle)
         
     def show(self):
-        pass
+        print(self.table)
     
