@@ -53,7 +53,7 @@ class problemsetQuestionList(QueryTemplate):
         # Instance specific variables
         self.page : int = 1
         self.max_page : int = 0
-        self.limit : int = 10
+        self.limit = self.config.user_config.get('question_list_limit')
         
         self.params = {'categorySlug': "", 'skip': 0, 'limit': self.limit, 'filters': {}}
         self.graphql_query = None
@@ -98,10 +98,6 @@ class problemsetQuestionList(QueryTemplate):
             self.params['skip'] = self.limit * self.page - self.limit # update the skip value
         
     def show(self):
-        retranslate = {'ac': 'Solved',
-                       'notac': 'Attempted',
-                        None: 'Not attempted'} # Leetcode specific translation
-        
         displayed : int = self.limit * self.page if self.limit * self.page < self.result.total else self.result.total
         
         
@@ -113,5 +109,5 @@ class problemsetQuestionList(QueryTemplate):
         table.add_column('Status')
         table.add_column('Difficulty')
         for item in self.result.questions:
-            table.add_row(item.frontendQuestionId, item.title, retranslate[item.status], item.difficulty)
+            table.add_row(item.frontendQuestionId, item.title, item.status, item.difficulty)
         print(table)
