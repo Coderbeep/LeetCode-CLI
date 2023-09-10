@@ -6,10 +6,11 @@ import os
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, 'config.yaml')
-
+# TODO: logs for changes made to config file
 class UserConfig():
     def __init__(self, config_path = CONFIG_PATH) -> None:
         self.path = config_path
+        self.data = None
         with open(self.path, 'r') as yaml_file:
             self.data = yaml.safe_load(yaml_file)
         
