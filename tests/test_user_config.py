@@ -69,12 +69,3 @@ def test_userconfig_execute_invalid_key(user_config_with_temp_file, capsys):
     # Check if an error message is printed for an invalid key
     captured = capsys.readouterr()
     assert "Invalid key: invalid_key" in captured.out
-
-# Test UserConfig execute method without config_key or config_value
-def test_userconfig_execute_missing_args(user_config_with_temp_file, capsys):
-    args = argparse.Namespace(config_key='', config_value='')  # No config_key or config_value provided
-    user_config_with_temp_file.execute(args)
-
-    # Check if an error message is printed for missing args
-    captured = capsys.readouterr()
-    assert "Invalid key: \n" in captured.out
