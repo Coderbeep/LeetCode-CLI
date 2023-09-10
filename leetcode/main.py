@@ -1,6 +1,6 @@
 import argparse
 from models import *
-from configuration import check_session, UserConfig
+from leetcode.configuration import check_session, UserConfig
 
 # TODO: add red color to the error messages
 # TODO: handle the questionTitle query

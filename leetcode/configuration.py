@@ -2,10 +2,14 @@ import requests
 import yaml
 import sys
 from rich import print
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+CONFIG_PATH = os.path.join(SCRIPT_DIR, 'config.yaml')
 
 class UserConfig():
-    def __init__(self) -> None:
-        self.path = 'config.yaml'
+    def __init__(self, config_path = CONFIG_PATH) -> None:
+        self.path = config_path
         with open(self.path, 'r') as yaml_file:
             self.data = yaml.safe_load(yaml_file)
         
@@ -15,7 +19,7 @@ class UserConfig():
     def dump_key(self, key, value):
         self.data['user_data'][key] = value
         
-        with open('config.yaml', 'w') as yaml_file:
+        with open(self.path, 'w') as yaml_file:
             yaml.dump(self.data, yaml_file, default_flow_style=False)
 
     def execute(self, args):
@@ -28,14 +32,14 @@ class UserConfig():
                 print('Configuration updated successfully.')
                 
 def check_session():
-    with open('config.yaml', 'r') as yaml_file:
+    with open(CONFIG_PATH, 'r') as yaml_file:
         data = yaml.safe_load(yaml_file)
     
     SESSION_ID = data['user_data']['session_id']
     if SESSION_ID == '': # or the id is not valid!
         SESSION_ID = input("Please provide the SESSION_ID: ")
         data['user_data']['session_id'] = SESSION_ID
-        with open('config.yaml', 'w') as yaml_file:
+        with open(CONFIG_PATH, 'w') as yaml_file:
             yaml.dump(data, yaml_file, default_flow_style=False)
     return True
 

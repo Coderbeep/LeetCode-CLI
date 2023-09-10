@@ -1,2 +1,2 @@
 @echo off
-python C:\Users\jakub\Documents\LeetCode-API\main.py %*
+python C:\Users\jakub\Documents\LeetCode-API\leetcode\main.py %*

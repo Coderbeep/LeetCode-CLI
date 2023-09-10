@@ -1,6 +1,6 @@
-from GQL_parse import Parser
-from configuration import Configuration
-from leet_api import LeetAPI
+from leetcode.GQL_parse import Parser
+from leetcode.configuration import Configuration
+from leetcode.leet_api import LeetAPI
 import os
 
 class QueryTemplate():

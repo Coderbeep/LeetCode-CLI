@@ -1,5 +1,4 @@
 # Import the available models from models folder
-
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
@@ -11,9 +10,9 @@ from rich.table import Table
 from rich.console import Console
 console = Console()
 
-from content_markdown import LeetQuestionToSections
-from graphql_query import GraphQLQuery
-from template import QueryTemplate
+from leetcode.content_markdown import LeetQuestionToSections
+from leetcode.graphql_query import GraphQLQuery
+from leetcode.template import QueryTemplate
 
 from .styles import LeetTable
 from .styles import ALERT
