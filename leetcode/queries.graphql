@@ -91,7 +91,7 @@ query questionContent($titleSlug: String!) {
   }
 }
 
-query questionTitle($titleSlug: String!) {
+query questionInfoTable($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     questionId
     questionFrontendId
@@ -102,6 +102,85 @@ query questionTitle($titleSlug: String!) {
     likes
     dislikes
     categoryTitle
+    status
+  }
+}
+
+# query for submissions
+query submissionDetails($submissionId: Int!) {
+  submissionDetails(submissionId: $submissionId) {
+    runtime
+    runtimeDisplay
+    runtimePercentile
+    runtimeDistribution
+    memory
+    memoryDisplay
+    memoryPercentile
+    memoryDistribution
+    code
+    timestamp
+    statusCode
+    user {
+      username
+      profile {
+        realName
+        userAvatar
+      }
+    }
+    lang {
+      name
+      verboseName
+    }
+    question {
+      questionId
+    }
+    notes
+    flagType
+    topicTags {
+      tagId
+      slug
+      name
+    }
+    runtimeError
+    compileError
+    lastTestcase
+    totalCorrect
+    totalTestcases
+  }
+}
+
+# submission list
+query submissionList($offset: Int!, $limit: Int!, $lastKey: String, $questionSlug: String!, $lang: Int, $status: Int) {
+  questionSubmissionList(
+    offset: $offset
+    limit: $limit
+    lastKey: $lastKey
+    questionSlug: $questionSlug
+    lang: $lang
+    status: $status
+  ) {
+    lastKey
+    hasNext
+    submissions {
+      id
+      title
+      titleSlug
+      status
+      statusDisplay
+      lang
+      langName
+      runtime
+      timestamp
+      url
+      isPending
+      memory
+      hasNotes
+      notes
+      flagType
+      topicTags {
+        id
+      }
+    }
   }
 }
     

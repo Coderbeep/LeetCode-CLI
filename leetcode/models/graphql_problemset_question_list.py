@@ -50,12 +50,15 @@ class problemTotalCount(QueryTemplate):
 class problemsetQuestionList(QueryTemplate):
     def __init__(self):
         super().__init__()
-        self.limit : int = 10
+        # Instance specific variables
+        self.page : int = 1
+        self.max_page : int = 0
+        self.limit = self.config.user_config.get('question_list_limit')
+        
         self.params = {'categorySlug': "", 'skip': 0, 'limit': self.limit, 'filters': {}}
         self.graphql_query = None
         self.result = None
-        self.page : int = 1
-        self.max_page : int = 0
+        
                 
     def parse_args(self, args):
         # Parse status argument
@@ -77,26 +80,24 @@ class problemsetQuestionList(QueryTemplate):
 
     def execute(self, args):
         self.parse_args(args)
-        
         self.validate_page()
         
         self.graphql_query = GraphQLQuery(self.query, self.params)
-        self.result = self.leet_API.post_query(self.graphql_query)
-        self.result = QueryResult.from_dict(self.result['data'])
+        self.result = self.leet_API.post_query(self.graphql_query) # Take the response from the API
+        self.result = QueryResult.from_dict(self.result['data']) # Put the response into the dataclass
 
         self.show()
         
     def validate_page(self):
+        """ Method to validate the page number. If number is too large,
+            set the page number to the last page."""
+            
         count = problemTotalCount().__call__()
         if self.page > -(-count // self.limit): # ceil(total / limit)
             self.page = -(-count // self.limit)
             self.params['skip'] = self.limit * self.page - self.limit # update the skip value
         
     def show(self):
-        retranslate = {'ac': 'Solved',
-                       'notac': 'Attempted',
-                       None: 'Not attempted'}
-        
         displayed : int = self.limit * self.page if self.limit * self.page < self.result.total else self.result.total
         
         
@@ -108,5 +109,5 @@ class problemsetQuestionList(QueryTemplate):
         table.add_column('Status')
         table.add_column('Difficulty')
         for item in self.result.questions:
-            table.add_row(item.frontendQuestionId, item.title, retranslate[item.status], item.difficulty)
+            table.add_row(item.frontendQuestionId, item.title, item.status, item.difficulty)
         print(table)

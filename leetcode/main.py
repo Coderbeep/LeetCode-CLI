@@ -2,9 +2,6 @@ import argparse
 from models import *
 from leetcode.configuration import check_session, UserConfig
 
-# TODO: add red color to the error messages
-# TODO: handle the questionTitle query
-# TODO: question title and difficulty above the introduction panel
 # TODO: add a command to open the question in editor
 # TODO: submit the solution from the terminal
 # TODO: add a command to show the solution in the terminal

@@ -1,19 +1,18 @@
-from typing import Optional
+import rich
+from rich import print
 from rich.align import VerticalAlignMethod
 from rich.console import JustifyMethod, OverflowMethod, RenderableType
-from rich.table import Table
 from rich.style import Style, StyleType
+from rich.table import Table
 from rich.text import Text
-from rich import print
-import rich
 
 difficulty_retranslate = {'Easy': '🟢 Easy', 
                         'Medium': '🟡 Medium',
                         'Hard': '🔴 Hard'}
 
-status_retranslate = {'Solved': '✅ Solved',
-                      'Attempted': '🟡 Attempted',
-                      'Not attempted': '❌ Not attempted'}
+status_retranslate = {'ac': '✅ Solved',
+                      'notac': '🟡 Attempted',
+                      None: '❌ Not attempted'}
 
 ALERT = Style(color='red', bold=True)
 

@@ -35,12 +35,13 @@ class QueryResult(JSONWizard):
 class questionOfToday(QueryTemplate):
     def __init__(self):
         super().__init__()
+        # Instance specific variables
+        self.contentFlag = False
+        self.browserFlag = False
+        
         self.params = {}
         self.graphql_query = None
         self.result = None
-        
-        self.contentFlag = False
-        self.browserFlag = False
         
     def execute(self, args):
         self.parse_args(args)
@@ -57,9 +58,7 @@ class questionOfToday(QueryTemplate):
             self.contentFlag = True
     
     def show_info_table(self):
-        retranslate = {'ac': 'Solved',
-                       'notac': 'Attempted',
-                       None: 'Not attempted'}
+
         question = self.result.question
         
         table = LeetTable()
@@ -69,16 +68,18 @@ class questionOfToday(QueryTemplate):
         table.add_column('Difficulty')
         
         table.add_row(question.frontendQuestionId, question.title,
-                      retranslate[question.status], question.difficulty)
+                      question.status, question.difficulty)
         
         print(table)
     
     def show(self):
         if self.contentFlag:
+            self.show_info_table()
+            print('\n\n\n')
             titleSlug = self.result.question.titleSlug
-            
-            question_instance = questionContent(titleSlug)
-            print(question_instance)
+        
+            question_content = questionContent(titleSlug)
+            question_content.show()
             
         elif self.browserFlag:
             self.show_info_table()

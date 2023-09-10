@@ -18,7 +18,6 @@ class questionContent(QueryTemplate):
         else:
             self.result = self.result['data']['question']['content']
     
-    def __repr__(self):
+    def show(self):
         for x in self.question_panels:
             print(x)
-        return ''
