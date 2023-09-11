@@ -4,7 +4,7 @@ import sys
 from rich import print
 import os
 
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, 'config.yaml')
 # TODO: logs for changes made to config file
 class UserConfig():
@@ -31,17 +31,40 @@ class UserConfig():
             if getattr(args, 'config_key') and getattr(args, 'config_value'):
                 self.dump_key(args.config_key, args.config_value)
                 print('Configuration updated successfully.')
-                
-def check_session():
-    with open(CONFIG_PATH, 'r') as yaml_file:
+              
+def check_session_response(session_id: str) -> bool:
+    QUERY = """ query
+            {
+                user {
+                username
+                isCurrentUserPremium
+                }
+            }
+            """
+    response = requests.post(url="https://leetcode.com/graphql",
+                                json={'query': QUERY},
+                                cookies={'LEETCODE_SESSION': session_id})
+    if response.json()['data']['user']:
+        return True
+    else:  
+        return False
+
+def update_session_id(session_id: str, path = CONFIG_PATH):
+    with open(path, 'r') as yaml_file:
+        data = yaml.safe_load(yaml_file)
+    
+    data['user_data']['session_id'] = session_id
+    with open(path, 'w') as yaml_file:
+        yaml.dump(data, yaml_file, default_flow_style=False)
+
+def check_session_validity(path = CONFIG_PATH) -> bool:
+    with open(path, 'r') as yaml_file:
         data = yaml.safe_load(yaml_file)
     
     SESSION_ID = data['user_data']['session_id']
-    if SESSION_ID == '': # or the id is not valid!
-        SESSION_ID = input("Please provide the SESSION_ID: ")
-        data['user_data']['session_id'] = SESSION_ID
-        with open(CONFIG_PATH, 'w') as yaml_file:
-            yaml.dump(data, yaml_file, default_flow_style=False)
+    while not check_session_response(SESSION_ID):
+        SESSION_ID = input("Please provide the proper SESSION_ID: ")
+    update_session_id(SESSION_ID)
     return True
 
 """ The main configuration class for the connection to GraphQL API.
@@ -68,7 +91,6 @@ class Configuration():
                                'Referer': self.host}
         self._cookies: dict = {'csrftoken': self._csrf_cookie,
                                'LEETCODE_SESSION': self.session_id}  
-        
         if not Configuration.session_checked:
             self.check_session_validity() 
     
@@ -113,4 +135,3 @@ class Configuration():
     
     def load_config(self):
         self.session_id = self.user_config.get('session_id')
-        
