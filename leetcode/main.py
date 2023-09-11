@@ -1,8 +1,7 @@
 import argparse
 from models import *
-from leetcode.configuration import check_session_validity, UserConfig
+from leetcode.configuration import check_session, UserConfig
 
-# TODO: add --version
 # TODO: add a command to open the question in editor
 # TODO: submit the solution from the terminal
 # TODO: add a command to show the solution in the terminal
@@ -64,5 +63,5 @@ def main():
 
     
 if __name__ == '__main__':
-    if check_session_validity():
+    if check_session():
         main()
