@@ -2,6 +2,7 @@ import argparse
 from leetcode.models import *
 from leetcode.configuration import check_session_validity, UserConfig
 
+# TODO: pipes support
 # TODO: add --version
 # TODO: add a command to open the question in editor
 # TODO: submit the solution from the terminal
@@ -49,6 +50,11 @@ def main():
 
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=questionOfToday)
+    
+    submission_parser = subparsers.add_parser('submission', help="Download submission code")
+    submission_parser.add_argument('question_slug', type=str, help='Title slug of the problem.')
+    submission_parser.add_argument('-l', '--list', action='store_true', help='List all submissions.')
+    submission_parser.set_defaults(func=submissionList)
     
     group_2 = today_problem_parser.add_mutually_exclusive_group()
     group_2.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
