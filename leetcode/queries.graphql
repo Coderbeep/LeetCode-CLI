@@ -183,7 +183,7 @@ query submissionList($offset: Int!, $limit: Int!, $lastKey: String, $questionSlu
     }
   }
 }
-    
+
 query getQuestionDetail($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     questionId
