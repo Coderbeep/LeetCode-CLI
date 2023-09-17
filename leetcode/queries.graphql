@@ -30,6 +30,7 @@ query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $fi
       difficulty
       freqBar
       frontendQuestionId: questionFrontendId
+      questionId
       isFavor
       paidOnly: isPaidOnly
       status
