@@ -42,7 +42,7 @@ def main():
     group.add_argument('-a', '--attempted', action='store_true', help='Display only attempted problems.')
     
     problem_parser = subparsers.add_parser('problem', help="Display problem")
-    problem_parser.set_defaults(func=problemByIDSlug)
+    problem_parser.set_defaults(func=problemInfo)
     group_3 = problem_parser.add_mutually_exclusive_group(required=True)
     group_3.add_argument('-i', '--id', type=positive_integer, help='Problem ID of the problem')
     group_3.add_argument('-s', '--slug', type=str, help='Title slug of the problem.')
