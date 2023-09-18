@@ -2,10 +2,19 @@ import argparse
 from leetcode.models import *
 from leetcode.configuration import check_session_validity, UserConfig
 
+# IDEA: submit the code to the proper question
+# using the question slug and question ID that needs to be contained within the filename
+
+# the file can be generated when the user displsays the question
+
+# TODO: questionID and questionFrontendID are not the same
+# TODO: handle the wrong cases in the args parser
+# TODO: loading ASCII art
+# TODO: testing the submission
+# TODO: Extend the Details model
+# TODO: update the queries file
 # TODO: pipes support
-# TODO: add --version
 # TODO: add a command to open the question in editor
-# TODO: submit the solution from the terminal
 # TODO: add a command to show the solution in the terminal
 # TODO: add a command to show the solution in the browser
 
@@ -21,6 +30,7 @@ def positive_integer(value):
 
 def main():
     parser = argparse.ArgumentParser(description="Leet CLI")
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.1.0')
     subparsers = parser.add_subparsers(title="Commands", dest="command")
     
     config_parser = subparsers.add_parser('config', help="Configure the CLI")
@@ -51,11 +61,16 @@ def main():
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=questionOfToday)
     
-    submission_parser = subparsers.add_parser('submission', help="Download submission code")
-    submission_parser.add_argument('question_slug', type=str, help='Title slug of the problem.')
-    submission_parser.add_argument('-l', '--list', action='store_true', help='List all submissions.')
-    submission_parser.set_defaults(func=submissionList)
+    # submission_parser = subparsers.add_parser('submission', help="Download submission code")
+    # submission_parser.add_argument('question_slug', type=str, help='Title slug of the problem.')
+    # submission_parser.add_argument('-l', '--list', action='store_true', help='List all submissions.')
+    # submission_parser.set_defaults(func=submissionList)
     
+    submission_parser = subparsers.add_parser('submit', help='Submit code answer')
+    submission_parser.add_argument('question_slug', type=str, help="Title slug of the question")
+    submission_parser.add_argument('path', type=str, help='Path to the file with code answer')
+    submission_parser.set_defaults(func=sendSubmission)
+        
     group_2 = today_problem_parser.add_mutually_exclusive_group()
     group_2.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
     group_2.add_argument('-c', '--contents', action='store_true', help='Display contents of the question in the terminal.')
