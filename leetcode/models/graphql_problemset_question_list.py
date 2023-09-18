@@ -6,6 +6,7 @@ class Question():
     status: str
     difficulty: str
     frontendQuestionId: int
+    questionId: int
 
 @dataclass
 class QueryResult(JSONWizard):
@@ -21,7 +22,8 @@ class QueryResult(JSONWizard):
                 title=item.get('title'),
                 status=item.get('status'),
                 difficulty=item.get('difficulty'),
-                frontendQuestionId=item.get('frontendQuestionId')
+                frontendQuestionId=item.get('frontendQuestionId'),
+                questionId=item.get('questionId')
             )
             for item in questions_data
         ]
@@ -109,5 +111,5 @@ class problemsetQuestionList(QueryTemplate):
         table.add_column('Status')
         table.add_column('Difficulty')
         for item in self.result.questions:
-            table.add_row(item.frontendQuestionId, item.title, item.status, item.difficulty)
+            table.add_row(item.questionId, item.title, item.status, item.difficulty)
         print(table)
