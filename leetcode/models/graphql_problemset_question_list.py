@@ -81,12 +81,13 @@ class problemsetQuestionList(QueryTemplate):
         self.params['skip'] = self.limit * self.page - self.limit
 
     def execute(self, args):
-        self.parse_args(args)
-        self.validate_page()
-        
-        self.graphql_query = GraphQLQuery(self.query, self.params)
-        self.result = self.leet_API.post_query(self.graphql_query) # Take the response from the API
-        self.result = QueryResult.from_dict(self.result['data']) # Put the response into the dataclass
+        with Loader('Fetching problem list...', ''):
+            self.parse_args(args)
+            self.validate_page()
+            
+            self.graphql_query = GraphQLQuery(self.query, self.params)
+            self.result = self.leet_API.post_query(self.graphql_query) # Take the response from the API
+            self.result = QueryResult.from_dict(self.result['data']) # Put the response into the dataclass
 
         self.show()
         

@@ -2,6 +2,7 @@
 import sys
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
+from leetcode.loader import Loader
 
 import rich
 from dataclass_wizard import JSONWizard

@@ -48,13 +48,18 @@ class userProblemsSolved(QueryTemplate):
                 sys.exit(1)
         
     def execute(self, args):
-        self.parse_args(args)
-        
-        self.graphql_query = GraphQLQuery(self.query, self.params)
-        self.result = self.leet_API.post_query(self.graphql_query)
-        self.result = QueryResult.from_dict(self.result['data'])
-        
-        self.show()
+        try:
+            with Loader('Fetching user stats...', ''):            
+                self.parse_args(args)
+                
+                self.graphql_query = GraphQLQuery(self.query, self.params)
+                self.result = self.leet_API.post_query(self.graphql_query)
+                if self.result['errors']:
+                    raise Exception(self.result['errors'][0]['message'])
+                self.result = QueryResult.from_dict(self.result['data'])
+            self.show()
+        except Exception as e:
+            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
     
     def show(self):
         difficulties = [x.difficulty for x in self.result.allQuestionsCount]

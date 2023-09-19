@@ -44,11 +44,12 @@ class questionOfToday(QueryTemplate):
         self.result = None
         
     def execute(self, args):
-        self.parse_args(args)
-        
-        self.graphql_query = GraphQLQuery(self.query, self.params)
-        self.result = self.leet_API.post_query(self.graphql_query)
-        self.result = QueryResult.from_dict(self.result['data'])
+        with Loader('Fetching question of the day...', ''):
+            self.parse_args(args)
+            
+            self.graphql_query = GraphQLQuery(self.query, self.params)
+            self.result = self.leet_API.post_query(self.graphql_query)
+            self.result = QueryResult.from_dict(self.result['data'])
         self.show()
         
     def parse_args(self, args):
@@ -75,10 +76,10 @@ class questionOfToday(QueryTemplate):
     def show(self):
         if self.contentFlag:
             self.show_info_table()
-            print('\n\n\n')
+            print('\n')
             titleSlug = self.result.question.titleSlug
-        
-            question_content = questionContent(titleSlug)
+            with Loader('Fetching question content...', ''):
+                question_content = questionContent(titleSlug)
             question_content.show()
             
         elif self.browserFlag:
