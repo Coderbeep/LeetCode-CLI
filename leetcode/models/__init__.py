@@ -8,7 +8,7 @@ from dataclass_wizard import JSONWizard
 from rich import print
 from rich.console import Console
 from rich.table import Table
-from .styles import ALERT, LeetTable
+from .styles import ALERT, LeetTable, SubmitEvaluation
 
 console = Console()
 

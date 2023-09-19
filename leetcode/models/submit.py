@@ -1,6 +1,5 @@
 from leetcode.models import *
 import requests
-import argparse
 # TODO: Add a decorator to check if the user is logged in
 
 # Example output of check/ for the success
@@ -178,11 +177,70 @@ class sendSubmission(QueryTemplate):
         
     def show_submission_info(self, response):
         if response.get('run_success'):
-            print(f"Status: {response.get('status_msg')}")
-            print(f"Runtime: {response.get('status_runtime')}")
+            status_msg = response.get('status_msg')
+            if status_msg == 'Accepted': # If the solution is accepted
+                print(f"Status: [bold green]{status_msg}[/bold green] :tada:")
+                print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} test cases -> {response.get('status_runtime')}")
 
-            
-            print(f"Runtime: {response.get('runtime_percentile')}")
-            print(f"Memory: {response.get('memory_percentile')}")            
+                perc_evalutaion = SubmitEvaluation(f"{response.get('runtime_percentile'):.2f}", f"{response.get('memory_percentile'):.2f}")
+                print(perc_evalutaion)
+            elif status_msg == 'Wrong Answer': # If the solution is wrong
+                print(f"Status: [bold red]{status_msg}[/bold red] :tada:")
+                print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
         else:
-            print(f"Exception: {response.get('status_msg')}")
+            if response.get('status_msg') == 'Time Limit Exceeded':
+                print(f"Status: [bold red]{response.get('status_msg')}[/bold red] :alarm_clock:")
+                print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
+            elif response.get('status_msg') == 'Runtime Error':
+                print(f"Status: [bold red]{response.get('status_msg')}[/bold red]")
+                print(f"{response.get('runtime_error')}")
+
+
+if __name__ == "__main__":
+    response = {
+    'status_code': 14,
+    'lang': 'python3',
+    'run_success': False,
+    'status_runtime': 'N/A',
+    'memory': 16056000,
+    'question_id': '2383',
+    'elapsed_time': 11009,
+    'compare_result':
+'0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+    'code_output': '',
+    'std_output': '',
+    'last_testcase': '12\n5',
+    'expected_output': '17',
+    'task_finish_time': 1695138105794,
+    'task_name': 'judger.judgetask.Judge',
+    'finished': True,
+    'total_correct': 0,
+    'total_testcases': 262,
+    'runtime_percentile': None,
+    'status_memory': 'N/A',
+    'memory_percentile': None,
+    'pretty_lang': 'Python3',
+    'submission_id': '1053699415',
+    'status_msg': 'Time Limit Exceeded',
+    'state': 'SUCCESS'
+}
+    
+    
+    if response.get('run_success'):
+        status_msg = response.get('status_msg')
+        if status_msg == 'Accepted': # If the solution is accepted
+            print(f"Status: [bold green]{status_msg}[/bold green] :tada:")
+            print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} test cases -> {response.get('status_runtime')}")
+
+            perc_evalutaion = SubmitEvaluation(f"{response.get('runtime_percentile'):.2f}", f"{response.get('memory_percentile'):.2f}")
+            print(perc_evalutaion)
+        elif status_msg == 'Wrong Answer': # If the solution is wrong
+            print(f"Status: [bold red]{status_msg}[/bold red] :tada:")
+            print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
+    else:
+        if response.get('status_msg') == 'Time Limit Exceeded':
+            print(f"Status: [bold red]{response.get('status_msg')}[/bold red] :alarm_clock:")
+            print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
+        elif response.get('status_msg') == 'Runtime Error':
+            print(f"Status: [bold red]{response.get('status_msg')}[/bold red] :tada:")
+            print(f"{response.get('runtime_error')}")
