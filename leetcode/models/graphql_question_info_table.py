@@ -60,3 +60,6 @@ class questionInfoTable(QueryTemplate):
     def show(self):
         print(self.table)
     
+    def __rich_console__(self, console: Console, options):
+        return self.table.__rich_console__(console, options)
+    

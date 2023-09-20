@@ -21,3 +21,7 @@ class questionContent(QueryTemplate):
     def show(self):
         for x in self.question_panels:
             print(x)
+    
+    def __rich_console__(self, console: Console, options):
+        for x in self.question_panels:
+            yield x

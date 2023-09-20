@@ -63,6 +63,6 @@ class problemInfo():
     def show(self):
         # TODO: make the __repr__ method for this class
         question_info_table = questionInfoTable(self.title_slug)
-        question_info_table.show()
+        print(question_info_table)
         question_content = questionContent(self.title_slug)
-        question_content.show()
+        print(question_content)

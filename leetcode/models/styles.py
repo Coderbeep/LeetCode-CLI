@@ -1,7 +1,7 @@
 import rich
 from rich import print
 from rich.align import VerticalAlignMethod
-from rich.console import JustifyMethod, OverflowMethod, RenderableType
+from rich.console import Console, ConsoleOptions, JustifyMethod, OverflowMethod, RenderResult, RenderableType
 from rich.style import Style, StyleType
 from rich.table import Table
 from rich.text import Text
@@ -54,6 +54,7 @@ class LeetTable(Table):
                 renderables[self.status_column_index] = status_retranslate[renderables[self.status_column_index]]
             renderables = tuple(renderables)
         return super().add_row(*renderables, style=style, end_section=end_section)
+
     
 class CustomBar(Bar):
     BEGIN_BLOCK_ELEMENTS = ["█", "█", "█", "▐", "▐", "▐", "▕", "▕"]

@@ -7,9 +7,7 @@ from leetcode.configuration import check_session_validity, UserConfig
 
 # the file can be generated when the user displsays the question
 
-# TODO: Loading animations where needed
 # TODO: handle the wrong cases in the args parser
-# TODO: loading ASCII art
 # TODO: pipes support
 # TODO: add a command to open the question in editor
 # TODO: add a command to show the solution in the terminal

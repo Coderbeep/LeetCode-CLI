@@ -80,7 +80,7 @@ class questionOfToday(QueryTemplate):
             titleSlug = self.result.question.titleSlug
             with Loader('Fetching question content...', ''):
                 question_content = questionContent(titleSlug)
-            question_content.show()
+            print(question_content)
             
         elif self.browserFlag:
             self.show_info_table()

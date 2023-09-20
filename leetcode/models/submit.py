@@ -46,7 +46,6 @@ class sendSubmission(QueryTemplate):
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
     
-    # TODO: inform about the file not found
     def load_code(self, filename):
         with open(filename, 'r') as file:
             code = file.read()
