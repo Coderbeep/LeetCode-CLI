@@ -60,7 +60,6 @@ class submissionList(QueryTemplate):
     
         
     def show(self):
-        # TODO: formatting the table
         table = LeetTable()
         table.add_column('ID')
         table.add_column('Title')

@@ -37,7 +37,6 @@ class problemInfo():
         raise ValueError("Invalid slug has been provided. Please try again.")
 
     def execute(self, args):
-        # TODO: handle the wrong cases in the args parser
         try:
             with Loader('Fetching problem info...', ''):
                 result = self.leet_api.get_request(self.API_URL)
@@ -61,7 +60,6 @@ class problemInfo():
         
     
     def show(self):
-        # TODO: make the __repr__ method for this class
         question_info_table = questionInfoTable(self.title_slug)
         print(question_info_table)
         question_content = questionContent(self.title_slug)
