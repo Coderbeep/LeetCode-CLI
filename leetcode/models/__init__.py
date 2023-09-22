@@ -17,14 +17,14 @@ from leetcode.content_markdown import LeetQuestionToSections
 from leetcode.graphql_query import GraphQLQuery
 from leetcode.template import QueryTemplate
 
-from leetcode.models.graphql_get_question_detail import getQuestionDetail
+from leetcode.models.graphql_get_question_detail import GetQuestionDetail
 from leetcode.models.graphql_problemset_question_list import \
-    problemsetQuestionList
-from leetcode.models.graphql_question_content import questionContent
-from leetcode.models.graphql_question_info_table import questionInfoTable
-from leetcode.models.graphql_question_of_today import questionOfToday
-from leetcode.models.graphql_submission_details import submissionDetails
-from leetcode.models.graphql_submission_list import submissionList
-from leetcode.models.graphql_user_problems_solved import userProblemsSolved
-from leetcode.models.problem_by_id_slug import problemInfo
-from leetcode.models.submit import sendSubmission
+    ProblemsetQuestionList
+from leetcode.models.graphql_question_content import QuestionContent
+from leetcode.models.graphql_question_info_table import QuestionInfoTable
+from leetcode.models.graphql_question_of_today import QuestionOfToday
+from leetcode.models.graphql_submission_details import SubmissionDetails
+from leetcode.models.graphql_submission_list import SubmissionList
+from leetcode.models.graphql_user_problems_solved import UserProblemsSolved
+from leetcode.models.problem_by_id_slug import ProblemInfo
+from leetcode.models.submit import SendSubmission

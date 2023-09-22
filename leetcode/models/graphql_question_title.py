@@ -28,7 +28,7 @@ class Question():
         
         return cls(questionId=questionId, questionFrontendId=questionFrontendId, title=title, titleSlug=titleSlug, isPaidOnly=isPaidOnly, difficulty=difficulty, likes=likes, dislikes=dislikes, categoryTitle=categoryTitle, status=status)
 
-class questionInfoTable(QueryTemplate):
+class QuestionInfoTable(QueryTemplate):
     def __init__(self, titleSlug: str = None):
         super().__init__()
         self.params = {'titleSlug': titleSlug}

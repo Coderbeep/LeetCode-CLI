@@ -28,7 +28,7 @@ class QueryResult(JSONWizard):
     allQuestionsCount: List[DifficultyCount] # questions count according to difficulty
     matchedUser: MatchedUser
     
-class userProblemsSolved(QueryTemplate):
+class UserProblemsSolved(QueryTemplate):
     def __init__(self):
         super().__init__()
         self.params = {'username': ''}

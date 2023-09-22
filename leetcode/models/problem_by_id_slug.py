@@ -2,7 +2,7 @@ from leetcode.models import *
 from leetcode.configuration import Configuration
 from leetcode.leet_api import LeetAPI
 
-class problemInfo(QueryTemplate):
+class ProblemInfo(QueryTemplate):
     API_URL = "https://leetcode.com/api/problems/all/"
     configuration = Configuration()
     leet_api = LeetAPI(configuration)
@@ -71,13 +71,13 @@ class problemInfo(QueryTemplate):
     
     def show(self):
         if self.browserFlag:
-            question_info_table = questionInfoTable(self.title_slug)
+            question_info_table = QuestionInfoTable(self.title_slug)
             print(question_info_table)
             link = self.config.host + f'/problems/{self.title_slug}/'
             print(f'Link to the problem: {link}')
             self.open_in_browser(link)
         else:
-            question_info_table = questionInfoTable(self.title_slug)
+            question_info_table = QuestionInfoTable(self.title_slug)
             print(question_info_table)
-            question_content = questionContent(self.title_slug)
+            question_content = QuestionContent(self.title_slug)
             print(question_content)

@@ -1,4 +1,4 @@
-query userProblemsSolved($username: String!) {
+query UserProblemsSolved($username: String!) {
   allQuestionsCount {
     difficulty
     count
@@ -17,7 +17,7 @@ query userProblemsSolved($username: String!) {
   }
 }
 
-query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
+query ProblemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
   problemsetQuestionList: questionList(
     categorySlug: $categorySlug
     limit: $limit
@@ -47,7 +47,7 @@ query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $fi
   }
 }
 
-query problemTotalCount($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
+query ProblemTotalCount($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
   problemsetQuestionList: questionList(
     categorySlug: $categorySlug
     limit: $limit
@@ -58,7 +58,7 @@ query problemTotalCount($categorySlug: String, $limit: Int, $skip: Int, $filters
   }
 }
 
-query questionOfToday {
+query QuestionOfToday {
   activeDailyCodingChallengeQuestion {
     date
     userStatus
@@ -84,7 +84,7 @@ query questionOfToday {
   }
 }
 
-query questionContent($titleSlug: String!) {
+query QuestionContent($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     content
     mysqlSchemas
@@ -92,7 +92,7 @@ query questionContent($titleSlug: String!) {
   }
 }
 
-query questionInfoTable($titleSlug: String!) {
+query QuestionInfoTable($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     questionId
     questionFrontendId
@@ -108,7 +108,7 @@ query questionInfoTable($titleSlug: String!) {
 }
 
 # query for submissions
-query submissionDetails($submissionId: Int!) {
+query SubmissionDetails($submissionId: Int!) {
   submissionDetails(submissionId: $submissionId) {
     runtime
     runtimeDisplay
@@ -151,7 +151,7 @@ query submissionDetails($submissionId: Int!) {
 }
 
 # submission list
-query submissionList($offset: Int!, $limit: Int!, $lastKey: String, $questionSlug: String!, $lang: Int, $status: Int) {
+query SubmissionList($offset: Int!, $limit: Int!, $lastKey: String, $questionSlug: String!, $lang: Int, $status: Int) {
   questionSubmissionList(
     offset: $offset
     limit: $limit
@@ -185,7 +185,7 @@ query submissionList($offset: Int!, $limit: Int!, $lastKey: String, $questionSlu
   }
 }
 
-query getQuestionDetail($titleSlug: String!) {
+query GetQuestionDetail($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     questionId
     questionFrontendId

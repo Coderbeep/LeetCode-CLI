@@ -1,6 +1,6 @@
 from . import *
 
-class questionContent(QueryTemplate):
+class QuestionContent(QueryTemplate):
     def __init__(self, titleSlug):
         super().__init__()
         self.params = {'titleSlug': titleSlug}

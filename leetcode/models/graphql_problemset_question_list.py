@@ -32,7 +32,7 @@ class QueryResult(JSONWizard):
 @dataclass
 class TotalCount(JSONWizard):
     total: int
-class problemTotalCount(QueryTemplate):
+class ProblemTotalCount(QueryTemplate):
     def __init__(self):
         super().__init__()
         self.graphql_query = None
@@ -49,7 +49,7 @@ class problemTotalCount(QueryTemplate):
         return self.result['data']['problemsetQuestionList']['total']
     
 
-class problemsetQuestionList(QueryTemplate):
+class ProblemsetQuestionList(QueryTemplate):
     def __init__(self):
         super().__init__()
         # Instance specific variables
@@ -95,7 +95,7 @@ class problemsetQuestionList(QueryTemplate):
         """ Method to validate the page number. If number is too large,
             set the page number to the last page."""
             
-        count = problemTotalCount().__call__()
+        count = ProblemTotalCount().__call__()
         if self.page > -(-count // self.limit): # ceil(total / limit)
             self.page = -(-count // self.limit)
             self.params['skip'] = self.limit * self.page - self.limit # update the skip value

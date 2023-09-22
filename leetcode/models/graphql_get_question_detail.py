@@ -1,6 +1,6 @@
 from leetcode.models import *
 
-class getQuestionDetail(QueryTemplate):
+class GetQuestionDetail(QueryTemplate):
     def __init__(self, title_slug: str):
         super().__init__()
         # Instance-specific variables

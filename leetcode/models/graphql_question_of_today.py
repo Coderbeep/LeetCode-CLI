@@ -32,25 +32,17 @@ class QueryResult(JSONWizard):
         
         return cls(date=date, userStatus=userStatus, link=link, question=question)  
 
-class questionOfToday(QueryTemplate):
+class QuestionOfToday(QueryTemplate):
     def __init__(self):
         super().__init__()
         # Instance specific variables
         self.contentFlag = False
         self.browserFlag = False
+        self.title_slug: str = None
         
         self.params = {}
         self.graphql_query = None
         self.result = None
-        
-    def execute(self, args):
-        with Loader('Fetching question of the day...', ''):
-            self.parse_args(args)
-            
-            self.graphql_query = GraphQLQuery(self.query, self.params)
-            self.result = self.leet_API.post_query(self.graphql_query)
-            self.result = QueryResult.from_dict(self.result['data'])
-        self.show()
         
     def parse_args(self, args):
         if getattr(args, 'browser'): 
@@ -58,37 +50,46 @@ class questionOfToday(QueryTemplate):
         if getattr(args, 'contents'):
             self.contentFlag = True
     
-    def show_info_table(self):
-
-        question = self.result.question
+    def execute(self, args):
+        with Loader('Fetching question of the day...', ''):
+            self.parse_args(args)
+            
+            self.graphql_query = GraphQLQuery(self.query, self.params)
+            self.result = self.leet_API.post_query(self.graphql_query)
+            self.result = QueryResult.from_dict(self.result['data'])
+            self.title_slug = self.result.question.titleSlug
+        self.show()
+    
+    # def show_info_table(self):
+    #     question = self.result.question
         
-        table = LeetTable()
-        table.add_column('ID')
-        table.add_column('Title')
-        table.add_column('Status')
-        table.add_column('Difficulty')
+    #     table = LeetTable()
+    #     table.add_column('ID')
+    #     table.add_column('Title')
+    #     table.add_column('Status')
+    #     table.add_column('Difficulty')
         
-        table.add_row(question.frontendQuestionId, question.title,
-                      question.status, question.difficulty)
+    #     table.add_row(question.frontendQuestionId, question.title,
+    #                   question.status, question.difficulty)
         
-        print(table)
+    #     print(table)
     
     def show(self):
+        question_info_table = QuestionInfoTable(self.title_slug)
         if self.contentFlag:
-            self.show_info_table()
+            print(question_info_table)
             print()
-            titleSlug = self.result.question.titleSlug
             with Loader('Fetching question content...', ''):
-                question_content = questionContent(titleSlug)
+                question_content = QuestionContent(self.title_slug)
             print(question_content)
-            
         elif self.browserFlag:
-            self.show_info_table()
+            print(question_info_table)
             link = self.config.host + self.result.link
             print(f'Link to the problem: {link}')
             self.open_in_browser(link)
         else:
-            self.show_info_table()
+            print(question_info_table)
+
 
         
     

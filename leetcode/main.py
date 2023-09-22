@@ -35,11 +35,11 @@ def main():
     
     stats_parser = subparsers.add_parser("stats", help="Display statistics")
     stats_parser.add_argument('username', type=str, help='User nickname', nargs='?')
-    stats_parser.set_defaults(func=userProblemsSolved)
+    stats_parser.set_defaults(func=UserProblemsSolved)
     
     problems_list_parser = subparsers.add_parser("list", help="Display problem list")
     problems_list_parser.add_argument('page', type=positive_integer, help='Page number', nargs='?', default=1)
-    problems_list_parser.set_defaults(func=problemsetQuestionList)
+    problems_list_parser.set_defaults(func=ProblemsetQuestionList)
     
     group = problems_list_parser.add_mutually_exclusive_group()
     group.add_argument('-s', '--solved', action='store_true', help='Display only solved problems.')
@@ -47,12 +47,12 @@ def main():
     group.add_argument('-a', '--attempted', action='store_true', help='Display only attempted problems.')
     
     problem_parser = subparsers.add_parser('problem', help="Display problem")
-    problem_parser.set_defaults(func=problemInfo)
+    problem_parser.set_defaults(func=ProblemInfo)
     problem_parser.add_argument('id', type=positive_integer, help='Problem ID of the problem')
     problem_parser.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
 
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
-    today_problem_parser.set_defaults(func=questionOfToday)
+    today_problem_parser.set_defaults(func=QuestionOfToday)
     
     # submission_parser = subparsers.add_parser('submission', help="Download submission code")
     # submission_parser.add_argument('question_slug', type=str, help='Title slug of the problem.')
@@ -62,7 +62,7 @@ def main():
     submission_parser = subparsers.add_parser('submit', help='Submit code answer')
     submission_parser.add_argument('question_slug', type=str, help="Title slug of the question")
     submission_parser.add_argument('path', type=str, help='Path to the file with code answer')
-    submission_parser.set_defaults(func=sendSubmission)
+    submission_parser.set_defaults(func=SendSubmission)
         
     group_2 = today_problem_parser.add_mutually_exclusive_group()
     group_2.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')

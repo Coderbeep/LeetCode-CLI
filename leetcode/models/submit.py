@@ -3,7 +3,7 @@ import requests
 # TODO: Add a decorator to check if the user is logged in
 
 # Example output of check/ for the success
-class sendSubmission(QueryTemplate):
+class SendSubmission(QueryTemplate):
     def __init__(self):
         super().__init__()
         self.title_slug = None
@@ -34,7 +34,7 @@ class sendSubmission(QueryTemplate):
         self.path = args.path
         
         # check if such slug exists
-        problemInfo.lookup_slug(self.title_slug)
+        ProblemInfo.lookup_slug(self.title_slug)
         
     def execute(self, args):
         try:
@@ -56,7 +56,7 @@ class sendSubmission(QueryTemplate):
         return code
             
     def execute_check(self, title_slug, filename):
-        question = getQuestionDetail(title_slug)
+        question = GetQuestionDetail(title_slug)
         self.params = {"lang": "python3",
                        "question_id": question.question_id,
                        "typed_code": self.load_code(filename),
@@ -90,7 +90,7 @@ class sendSubmission(QueryTemplate):
             
     def execute_submission(self, title_slug, filename):
         # In similar way execute clicking submit button on the leetcode website
-        question = getQuestionDetail(title_slug)
+        question = GetQuestionDetail(title_slug)
         self.params = {"lang": "python3",
                     "question_id": question.question_id,
                     "typed_code": self.load_code(filename)}

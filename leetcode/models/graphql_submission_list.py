@@ -11,7 +11,7 @@ class Submission():
     langName: str
     
 @dataclass
-class questionSubmisstionList(JSONWizard):
+class QuestionSubmisstionList(JSONWizard):
     submissions: List[Submission]
     
     @classmethod
@@ -28,7 +28,7 @@ class questionSubmisstionList(JSONWizard):
         return cls(submissions=submissions)
 
 
-class submissionList(QueryTemplate):
+class SubmissionList(QueryTemplate):
     def __init__(self):
         super().__init__()
         # Instance specific variables
@@ -52,7 +52,7 @@ class submissionList(QueryTemplate):
         
         self.graphql_query = GraphQLQuery(self.query, self.params)
         self.result = self.leet_API.post_query(self.graphql_query)
-        self.result = questionSubmisstionList.from_dict(self.result['data'])
+        self.result = QuestionSubmisstionList.from_dict(self.result['data'])
         if self.list_view:
             self.show()
         if self.submission_download:
@@ -75,6 +75,6 @@ class submissionList(QueryTemplate):
     
     def get_code(self):
         # TODO: returning the code of the first submission for now
-        submission_details = submissionDetails(self.result.submissions[0].id)
+        submission_details = SubmissionDetails(self.result.submissions[0].id)
         submission_details.execute()
         return submission_details.result.code

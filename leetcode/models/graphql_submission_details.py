@@ -12,7 +12,7 @@ class SubmissionDetails(JSONWizard):
         return cls(runtime=data['runtime'], memory=data['memory'], code=data['code'])
     
     
-class submissionDetails(QueryTemplate):
+class SubmissionDetails(QueryTemplate):
     def __init__(self, submission_id) -> None:
         super().__init__()
         # Instance specific variables
