@@ -48,10 +48,8 @@ def main():
     
     problem_parser = subparsers.add_parser('problem', help="Display problem")
     problem_parser.set_defaults(func=problemInfo)
-    group_3 = problem_parser.add_mutually_exclusive_group(required=True)
-    group_3.add_argument('-i', '--id', type=positive_integer, help='Problem ID of the problem')
-    group_3.add_argument('-s', '--slug', type=str, help='Title slug of the problem.')
-    
+    problem_parser.add_argument('id', type=positive_integer, help='Problem ID of the problem')
+    problem_parser.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
 
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=questionOfToday)
