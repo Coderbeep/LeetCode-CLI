@@ -76,7 +76,7 @@ class questionOfToday(QueryTemplate):
     def show(self):
         if self.contentFlag:
             self.show_info_table()
-            print('\n')
+            print()
             titleSlug = self.result.question.titleSlug
             with Loader('Fetching question content...', ''):
                 question_content = questionContent(titleSlug)
