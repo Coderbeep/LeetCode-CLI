@@ -29,11 +29,11 @@ status_retranslate = {'ac': '✅ Solved',
 ALERT = Style(color='red', bold=True)
 
 class LeetTable(Table):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, width=100,**kwargs):
         super().__init__(*args, **kwargs)
         self.box = rich.box.ROUNDED
         self.header_style = Style(color='blue', bold=True)
-        self.width = 100
+        self.width = width
         
         self.difficulty_column_index = None
         self.status_column_index = None
@@ -66,13 +66,14 @@ class CustomBar(Bar):
         self,
         end: float,
         *,
+        info: str = None,
         size: float = 50,
         begin: float = 0,
         width: Optional[int] = 50,
         color: Union[Color, str] = "default",
         bgcolor: Union[Color, str] = "default"):
         super().__init__(size, begin, end, width=width, color=color, bgcolor=bgcolor)
-
+        self.info = info
     
     def __rich_console__(self, console, options):
         width = min(
@@ -107,6 +108,8 @@ class CustomBar(Bar):
 
         suffix = self.BACKGROUND_BLOCK * (width - len(body))
 
+        if self.info is not None:
+            yield self.info + ' '
         yield Segment(prefix + body[len(prefix):] + suffix, self.style)
         yield Segment.line()
 
@@ -133,4 +136,6 @@ class SubmitEvaluation():
         
         columns = Columns([runtime_panel, memory_panel])  
         yield columns
-        
+
+# class statsContainer():
+#     def __init__()
