@@ -60,19 +60,6 @@ class QuestionOfToday(QueryTemplate):
             self.title_slug = self.result.question.titleSlug
         self.show()
     
-    # def show_info_table(self):
-    #     question = self.result.question
-        
-    #     table = LeetTable()
-    #     table.add_column('ID')
-    #     table.add_column('Title')
-    #     table.add_column('Status')
-    #     table.add_column('Difficulty')
-        
-    #     table.add_row(question.frontendQuestionId, question.title,
-    #                   question.status, question.difficulty)
-        
-    #     print(table)
     
     def show(self):
         question_info_table = QuestionInfoTable(self.title_slug)
