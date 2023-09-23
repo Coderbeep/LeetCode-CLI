@@ -20,7 +20,7 @@ class QuestionContent(QueryTemplate):
     
     def show(self):
         for x in self.question_panels:
-            print(x)
+            console.print(x)
     
     def __rich_console__(self, console: Console, options):
         for x in self.question_panels:

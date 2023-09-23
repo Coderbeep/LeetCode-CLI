@@ -28,4 +28,4 @@ class SubmissionDetails(QueryTemplate):
         self.result = SubmissionDetails.from_dict(self.result['data'])
     
     def show(self):
-        print(self.result)
+        console.print(self.result)

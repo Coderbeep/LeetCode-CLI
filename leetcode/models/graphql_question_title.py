@@ -58,5 +58,5 @@ class QuestionInfoTable(QueryTemplate):
         self.table.add_row(q.questionFrontendId, q.title, q.difficulty, q.status, q.categoryTitle)
         
     def show(self):
-        print(self.table)
+        console.print(self.table)
     

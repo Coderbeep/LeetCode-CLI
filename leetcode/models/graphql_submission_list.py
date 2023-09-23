@@ -71,7 +71,7 @@ class SubmissionList(QueryTemplate):
         submissions = self.result.submissions
         for x in submissions:
             table.add_row(x.id, x.title, x.statusDisplay, x.runtime, x.memory, x.langName)
-        print(table)
+        console.print(table)
     
     def get_code(self):
         # TODO: returning the code of the first submission for now
