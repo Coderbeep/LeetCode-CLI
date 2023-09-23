@@ -11,6 +11,7 @@ class ProblemInfo(QueryTemplate):
         super().__init__()
         # Instance specific variables
         self.browserFlag = False
+        self.fileFlag = False
         
         self.title_slug: str = None
         self.resuklt = None
@@ -44,6 +45,8 @@ class ProblemInfo(QueryTemplate):
     def parse_args(self, args):
         if getattr(args, 'browser'): 
             self.browserFlag = True
+        if getattr(args, 'file'):
+            self.fileFlag = True
 
     def execute(self, args):
         self.parse_args(args)
@@ -57,27 +60,28 @@ class ProblemInfo(QueryTemplate):
                             break
                     if not self.title_slug:
                         raise ValueError("Invalid ID has been provided. Please try again.")
-                elif getattr(args, 'slug'):
-                    for item in self.result.get('stat_status_pairs', []):
-                        if item['stat'].get('question__title_slug') == args.slug:
-                            self.title_slug = item['stat'].get('question__title_slug', '')
-                            break
-                    if not self.title_slug:
-                        raise ValueError("Invalid slug has been provided. Please try again.")
             self.show()
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
-        
+        if self.fileFlag:
+            self.create_submission_file()
     
+    def create_submission_file(self):
+        question = GetQuestionDetail(self.title_slug)
+        file_name = f"{question.question_id}.{question.title_slug}.py"
+        with open(file_name, 'w') as file:
+            file.write(question.code_snippet)
+        console.print(f"File '{file_name}' has been created.")
+           
     def show(self):
         if self.browserFlag:
             question_info_table = QuestionInfoTable(self.title_slug)
-            print(question_info_table)
+            console.print(question_info_table)
             link = self.config.host + f'/problems/{self.title_slug}/'
-            print(f'Link to the problem: {link}')
+            console.print(f'Link to the problem: {link}')
             self.open_in_browser(link)
         else:
             question_info_table = QuestionInfoTable(self.title_slug)
-            print(question_info_table)
+            console.print(question_info_table)
             question_content = QuestionContent(self.title_slug)
-            print(question_content)
+            console.print(question_content)            
