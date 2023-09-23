@@ -43,3 +43,7 @@ class GetQuestionDetail(QueryTemplate):
     @property
     def sample_test_case(self):
         return self._question_data.get('sampleTestCase')
+    
+    @property
+    def code_snippet(self, lang: str = 'python3'):
+        return list(filter(lambda x: x['langSlug'] == lang, self._question_data.get('codeSnippets')))[0].get('code')
