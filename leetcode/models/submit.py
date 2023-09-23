@@ -1,7 +1,6 @@
 from leetcode.models import *
 import requests
 # TODO: Add a decorator to check if the user is logged in
-
 # Example output of check/ for the success
 class SendSubmission(QueryTemplate):
     def __init__(self):
@@ -54,7 +53,7 @@ class SendSubmission(QueryTemplate):
             raise Exception("File is empty")
         
         return code
-            
+    
     def execute_check(self, title_slug, filename):
         question = GetQuestionDetail(title_slug)
         self.params = {"lang": "python3",
