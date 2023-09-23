@@ -92,9 +92,9 @@ class Configuration():
         self._cookies: dict = {'csrftoken': self._csrf_cookie,
                                'LEETCODE_SESSION': self.session_id}  
         if not Configuration.session_checked:
-            self.check_session_validity() 
+            self.__check_session_validity() 
     
-    def check_session_validity(self):
+    def __check_session_validity(self):
         QUERY = """ query
                 {
                     user {

@@ -5,7 +5,6 @@ from rich import print
 import os
 
 # TODO: handle images
-# TODO: handle links
 """ Turns the HTML code of the LeetCode question to sections. Then each section is 
     altered to Markdown and later into the Rich Panel. 
     

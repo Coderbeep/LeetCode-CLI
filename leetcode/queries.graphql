@@ -247,3 +247,49 @@ query GetQuestionDetail($titleSlug: String!) {
     __typename
   }
 }
+
+query consolePanelConfig($titleSlug: String!) {
+  question(titleSlug: $titleSlug) {
+    questionId
+    questionFrontendId
+    questionTitle
+    enableDebugger
+    enableRunCode
+    enableSubmit
+    enableTestMode
+    exampleTestcaseList
+    metaData
+  }
+}
+
+
+query recentAcSubmissions($username: String!, $limit: Int!) {
+  recentAcSubmissionList(username: $username, limit: $limit) {
+    id
+    title
+    titleSlug
+    timestamp
+  }
+}
+    
+query GetQuestionId($titleSlug: String!) {
+  question(titleSlug: $titleSlug) {
+    questionId
+  }
+}
+
+query IntrospectionQuery {
+  __type(name: "Query") {
+    name
+    fields {
+      name
+      args {
+        name
+        type {
+          name
+          kind
+        }
+      }
+    }
+  }
+}

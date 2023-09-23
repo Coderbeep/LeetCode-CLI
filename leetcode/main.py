@@ -7,7 +7,6 @@ from leetcode.configuration import check_session_validity, UserConfig
 
 # the file can be generated when the user displsays the question
 
-# TODO: handle the wrong cases in the args parser
 # TODO: pipes support
 # TODO: add a command to open the question in editor
 # TODO: add a command to show the solution in the terminal
@@ -50,6 +49,7 @@ def main():
     problem_parser.set_defaults(func=ProblemInfo)
     problem_parser.add_argument('id', type=positive_integer, help='Problem ID of the problem')
     problem_parser.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
+    problem_parser.add_argument('-f', '--file', action='store_true', help='Create a file with the problem content.')
 
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=QuestionOfToday)
@@ -76,7 +76,7 @@ def main():
     else:
         print("Unknown command. Use 'leet --help' for available commands.")
 
-    
+
 if __name__ == '__main__':
     if check_session_validity():
         main()
