@@ -1,8 +1,9 @@
-from rich.markdown import Markdown
-from rich.panel import Panel
+import os
+
 from markdownify import markdownify
 from rich import print
-import os
+from rich.markdown import Markdown
+from rich.panel import Panel
 
 # TODO: handle images
 """ Turns the HTML code of the LeetCode question to sections. Then each section is 

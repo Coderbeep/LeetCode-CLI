@@ -1,8 +1,9 @@
+import os
+import sys
+
 import requests
 import yaml
-import sys
 from rich import print
-import os
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, 'config.yaml')

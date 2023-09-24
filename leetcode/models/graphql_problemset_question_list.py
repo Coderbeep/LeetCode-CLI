@@ -1,4 +1,4 @@
-from . import *
+from leetcode.models import *
 
 @dataclass
 class Question():

@@ -1,6 +1,7 @@
+import requests
+
 from leetcode.configuration import Configuration
 from leetcode.graphql_query import GraphQLQuery
-import requests
 
 """ Class responsible for handling the POST requests to the 
     Leetcode GraphQL API. 

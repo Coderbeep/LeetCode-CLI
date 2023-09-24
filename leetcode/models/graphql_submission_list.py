@@ -1,4 +1,6 @@
 from leetcode.models import *
+from leetcode.models.problem_by_id_slug import ProblemInfo
+
 
 @dataclass
 class Submission():

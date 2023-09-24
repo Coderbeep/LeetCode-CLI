@@ -1,4 +1,4 @@
-from . import *
+from leetcode.models import *
 
 class QuestionContent(QueryTemplate):
     def __init__(self, titleSlug):

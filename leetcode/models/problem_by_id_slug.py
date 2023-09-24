@@ -1,6 +1,10 @@
-from leetcode.models import *
 from leetcode.configuration import Configuration
 from leetcode.leet_api import LeetAPI
+from leetcode.models import *
+from leetcode.models.graphql_get_question_detail import GetQuestionDetail
+from leetcode.models.graphql_question_content import QuestionContent
+from leetcode.models.graphql_question_info_table import QuestionInfoTable
+
 
 class ProblemInfo(QueryTemplate):
     API_URL = "https://leetcode.com/api/problems/all/"

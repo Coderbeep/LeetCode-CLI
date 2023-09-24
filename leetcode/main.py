@@ -1,6 +1,14 @@
 import argparse
-from leetcode.models import *
-from leetcode.configuration import check_session_validity, UserConfig
+
+# from leetcode.models import *
+from leetcode.configuration import UserConfig, check_session_validity
+from leetcode.models.graphql_problemset_question_list import \
+    ProblemsetQuestionList
+from leetcode.models.graphql_question_of_today import QuestionOfToday
+from leetcode.models.graphql_submission_list import SubmissionList
+from leetcode.models.graphql_user_problems_solved import UserProblemsSolved
+from leetcode.models.problem_by_id_slug import ProblemInfo
+from leetcode.models.submit import SendSubmission
 
 # TODO: pipes support
 # TODO: add a command to open the question in editor

@@ -1,22 +1,20 @@
+from typing import Optional, Union
+
 import rich
 from rich import print
 from rich.align import VerticalAlignMethod
-from rich.console import Console, ConsoleOptions, JustifyMethod, OverflowMethod, RenderResult, RenderableType
+from rich.bar import Bar
+from rich.color import Color
+from rich.columns import Columns
+from rich.console import (Console, ConsoleOptions, JustifyMethod,
+                          OverflowMethod, RenderableType, RenderResult)
+from rich.containers import Renderables
+from rich.jupyter import JupyterMixin
+from rich.panel import Panel
+from rich.segment import Segment
 from rich.style import Style, StyleType
 from rich.table import Table
 from rich.text import Text
-from rich.bar import Bar
-from rich.segment import Segment
-from rich.color import Color
-from typing import (
-    Optional,
-    Union,
-)
-
-from rich.columns import Columns
-from rich.panel import Panel
-from rich.containers import Renderables
-from rich.jupyter import JupyterMixin
 
 difficulty_retranslate = {'Easy': '🟢 Easy', 
                         'Medium': '🟡 Medium',

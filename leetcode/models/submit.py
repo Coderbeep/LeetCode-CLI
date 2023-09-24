@@ -1,5 +1,10 @@
-from leetcode.models import *
 import requests
+
+from leetcode.models import *
+from leetcode.models.graphql_get_question_detail import GetQuestionDetail
+from leetcode.models.problem_by_id_slug import ProblemInfo
+
+
 # TODO: Add a decorator to check if the user is logged in
 # Example output of check/ for the success
 class SendSubmission(QueryTemplate):

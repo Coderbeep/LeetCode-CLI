@@ -1,4 +1,6 @@
-from . import *
+from leetcode.models import *
+from leetcode.models.graphql_question_content import QuestionContent
+from leetcode.models.graphql_question_info_table import QuestionInfoTable
 
 
 @dataclass

@@ -1,5 +1,5 @@
-import re 
 import os
+import re
 
 """ Global variables declaration """
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
