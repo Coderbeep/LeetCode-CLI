@@ -2,15 +2,12 @@ import argparse
 from leetcode.models import *
 from leetcode.configuration import check_session_validity, UserConfig
 
-# IDEA: submit the code to the proper question
-# using the question slug and question ID that needs to be contained within the filename
-
-# the file can be generated when the user displsays the question
-
 # TODO: pipes support
 # TODO: add a command to open the question in editor
 # TODO: add a command to show the solution in the terminal
 # TODO: add a command to show the solution in the browser
+# TODO: problem with import in synced code or code to submit
+# TODO: random problem selector (from not accepted problems)
 
 def positive_integer(value):
     try:
@@ -54,10 +51,11 @@ def main():
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=QuestionOfToday)
     
-    # submission_parser = subparsers.add_parser('submission', help="Download submission code")
-    # submission_parser.add_argument('question_slug', type=str, help='Title slug of the problem.')
-    # submission_parser.add_argument('-l', '--list', action='store_true', help='List all submissions.')
-    # submission_parser.set_defaults(func=submissionList)
+    submission_parser = subparsers.add_parser('submission', help="Download submission code")
+    submission_parser.add_argument('id', type=int, help='ID of the problem.')
+    submission_parser.add_argument('-s', '--show', action='store_true', help='Show latest accepted code in the terminal.')
+    submission_parser.add_argument('-d', '--download', action='store_true', help='Download the latest accepted code.')
+    submission_parser.set_defaults(func=SubmissionList)
     
     submission_parser = subparsers.add_parser('submit', help='Submit code answer')
     submission_parser.add_argument('question_slug', type=str, help="Title slug of the question")

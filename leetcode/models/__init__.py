@@ -24,7 +24,7 @@ from leetcode.models.graphql_question_content import QuestionContent
 from leetcode.models.graphql_question_info_table import QuestionInfoTable
 from leetcode.models.graphql_question_of_today import QuestionOfToday
 from leetcode.models.graphql_submission_details import SubmissionDetails
-from leetcode.models.graphql_submission_list import SubmissionList
 from leetcode.models.graphql_user_problems_solved import UserProblemsSolved
 from leetcode.models.problem_by_id_slug import ProblemInfo
+from leetcode.models.graphql_submission_list import SubmissionList
 from leetcode.models.submit import SendSubmission
