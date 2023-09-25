@@ -4,7 +4,6 @@ from leetcode.models import *
 
 
 # TODO: Add the submission ID into the table, so that the user can copy paste that to download the submitted code
-# TODO: think about round the time to the nearest
 @dataclass
 class DifficultyCount:
     difficulty: str

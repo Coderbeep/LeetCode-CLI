@@ -66,26 +66,27 @@ class SubmissionList(QueryTemplate):
                     raise ValueError("Apparently you don't have any submissions for this problem.")
             self.show()
             
-            if self.show_terminal:
-                self.show_code()
+            # if self.show_terminal:
+            #     self.show_code()
 
-            if self.submission_download:
-                self.download_submission()
+            # if self.submission_download:
+            #     self.download_submission()
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
         
     def show(self):
         table = LeetTable()
         table.add_column('ID')
-        table.add_column('Title')
-        table.add_column('Status Display')
+        # table.add_column('Title')
+        table.add_column('Status')
         table.add_column('Runtime')
         table.add_column('Memory')
         table.add_column('Language')
         
         submissions = self.result.submissions
+        table.title = f"Submissions for problem [blue]{submissions[0].title}"
         for x in submissions:
-            table.add_row(x.id, x.title, x.statusDisplay, x.runtime, x.memory, x.langName)
+            table.add_row(x.id, x.statusDisplay, x.runtime, x.memory, x.langName)
         console.print(table)
         
     

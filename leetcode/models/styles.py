@@ -22,7 +22,11 @@ difficulty_retranslate = {'Easy': '🟢 Easy',
 
 status_retranslate = {'ac': '✅ Solved',
                       'notac': '🟡 Attempted',
-                      None: '❌ Not attempted'}
+                      None: '❌ Not attempted',
+                      'Wrong Answer': '❌ Wrong Answer',
+                      'Accepted': '✅ Accepted',
+                      'Runtime Error': '❌ Runtime Error',
+                      'Time Limit Exceeded': '❌ Time Limit Exceeded',}
 
 ALERT = Style(color='red', bold=True)
 
