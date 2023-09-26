@@ -31,8 +31,6 @@ class QuestionSubmisstionList(JSONWizard):
 
 
 
-# TODO: Emojis/colors for status display (Accepted, Wrong Answer, Runtime Error)
-# TODO: Handle empty submissions table
 class SubmissionList(QueryTemplate):
     def __init__(self):
         super().__init__()
@@ -66,11 +64,11 @@ class SubmissionList(QueryTemplate):
                     raise ValueError("Apparently you don't have any submissions for this problem.")
             self.show()
             
-            # if self.show_terminal:
-            #     self.show_code()
+            if self.show_terminal:
+                self.show_code()
 
-            # if self.submission_download:
-            #     self.download_submission()
+            if self.submission_download:
+                self.download_submission()
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
         
@@ -134,7 +132,7 @@ class SubmissionList(QueryTemplate):
                 with open(file_name, 'w') as file:
                     file.write(code)
                     
-            console.print(f"File saved as {file_name}")
+            console.print(f"✅ File saved as '{file_name}'")
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
             

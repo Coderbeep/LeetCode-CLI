@@ -50,8 +50,6 @@ class UserProblemsSolved(QueryTemplate):
                 console.print("Username neither provided nor configured. Head to --help.", style=ALERT)
                 sys.exit(1)
     
-    # TODO: add a bar chart for the stats
-    # TODOL add last submissions
     def execute(self, args):
         try:
             with Loader('Fetching user stats...', ''):            
