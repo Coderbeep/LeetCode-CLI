@@ -52,10 +52,12 @@ def main():
     
     problem_parser = subparsers.add_parser('problem', help="Display problem")
     problem_parser.set_defaults(func=ProblemInfo)
-    problem_parser.add_argument('id', type=positive_integer, help='Problem ID of the problem')
+    problem_parser.add_argument('-r', '--random', action='store_true', help='Fetch a random problem.')
+    problem_parser.add_argument('id', type=positive_integer, help='Problem ID of the problem', default=0, nargs='?')
     problem_parser.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
     problem_parser.add_argument('-f', '--file', action='store_true', help='Create a file with the problem content.')
 
+    
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=QuestionOfToday)
     

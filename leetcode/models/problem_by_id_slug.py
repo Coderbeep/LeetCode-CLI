@@ -4,6 +4,7 @@ from leetcode.models import *
 from leetcode.models.graphql_get_question_detail import GetQuestionDetail
 from leetcode.models.graphql_question_content import QuestionContent
 from leetcode.models.graphql_question_info_table import QuestionInfoTable
+from leetcode.models.graphql_problemset_question_list import ProblemTotalCount, ProblemsetQuestionList
 
 
 class ProblemInfo(QueryTemplate):
@@ -53,22 +54,42 @@ class ProblemInfo(QueryTemplate):
             self.fileFlag = True
 
     def execute(self, args):
-        self.parse_args(args)
-        try:
-            with Loader('Fetching problem info...', ''):
-                self.result = self.leet_api.get_request(self.API_URL)
-                if getattr(args, 'id'):
-                    for item in self.result.get('stat_status_pairs', []):
-                        if item['stat'].get('question_id') == args.id:
-                            self.title_slug = item['stat'].get('question__title_slug', '')
-                            break
-                    if not self.title_slug:
-                        raise ValueError("Invalid ID has been provided. Please try again.")
-            self.show()
-        except Exception as e:
-            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
-        if self.fileFlag:
-            self.create_submission_file()
+        self.parse_args(args)          
+        if getattr(args, 'random'):
+            total = ProblemTotalCount({'status': 'NOT_STARTED'}).__call__()
+        
+            from random import randint
+            with Loader('Selecting random problem...', ''):
+                choosen_number = randint(1, total)
+                while True:
+                    list_instance = ProblemsetQuestionList({'status': 'NOT_STARTED'}, limit=1, skip=choosen_number - 1)
+                    problem = list_instance.get_data()['problemsetQuestionList']['questions'][0]
+                    if not problem['paidOnly']:
+                        break
+                    choosen_number = randint(1, total)
+
+            with Loader('Fetching problem contents...', ''):
+                question_info_table = QuestionInfoTable(problem['titleSlug'])
+                question_content = QuestionContent(problem['titleSlug'])
+            console.print(question_info_table)
+            console.print(question_content)
+            
+        else:
+            try:
+                with Loader('Fetching problem info...', ''):
+                    self.result = self.leet_api.get_request(self.API_URL)
+                    if getattr(args, 'id'):
+                        for item in self.result.get('stat_status_pairs', []):
+                            if item['stat'].get('question_id') == args.id:
+                                self.title_slug = item['stat'].get('question__title_slug', '')
+                                break
+                        if not self.title_slug:
+                            raise ValueError("Invalid ID has been provided. Please try again.")
+                self.show()
+            except Exception as e:
+                console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
+            if self.fileFlag:
+                self.create_submission_file()
     
     def create_submission_file(self):
         question = GetQuestionDetail(self.title_slug)
@@ -88,4 +109,4 @@ class ProblemInfo(QueryTemplate):
             question_info_table = QuestionInfoTable(self.title_slug)
             console.print(question_info_table)
             question_content = QuestionContent(self.title_slug)
-            console.print(question_content)            
+            console.print(question_content)

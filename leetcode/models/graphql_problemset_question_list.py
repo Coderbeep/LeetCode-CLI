@@ -33,11 +33,11 @@ class QueryResult(JSONWizard):
 class TotalCount(JSONWizard):
     total: int
 class ProblemTotalCount(QueryTemplate):
-    def __init__(self):
+    def __init__(self, filters={}):
         super().__init__()
         self.graphql_query = None
         self.result = None
-        self.params = {'categorySlug': "", 'skip': 0, 'limit': 10, 'filters': {}}
+        self.params = {'categorySlug': "", 'skip': 0, 'limit': 10, 'filters': filters}
         
         self.execute()
         
@@ -50,14 +50,16 @@ class ProblemTotalCount(QueryTemplate):
     
 
 class ProblemsetQuestionList(QueryTemplate):
-    def __init__(self):
+    def __init__(self, filters={}, limit=None, skip=0):
         super().__init__()
         # Instance specific variables
         self.page : int = 1
         self.max_page : int = 0
-        self.limit = self.config.user_config.get('question_list_limit')
+        self.filters = filters
+        self.limit = limit or self.config.user_config.get('question_list_limit')
+        self.skip = skip
         
-        self.params = {'categorySlug': "", 'skip': 0, 'limit': self.limit, 'filters': {}}
+        self.params = {'categorySlug': "", 'skip':self.skip, 'limit': self.limit, 'filters': self.filters}
         self.graphql_query = None
         self.result = None
         
@@ -94,11 +96,9 @@ class ProblemsetQuestionList(QueryTemplate):
     def validate_page(self):
         """ Method to validate the page number. If number is too large,
             set the page number to the last page."""
-            
         count = ProblemTotalCount().__call__()
-        if self.page > -(-count // self.limit): # ceil(total / limit)
-            self.page = -(-count // self.limit)
-            self.params['skip'] = self.limit * self.page - self.limit # update the skip value
+        self.page = min(self.page, -(-count // self.limit))
+        self.params['skip'] = self.limit * self.page - self.limit # update the skip value
         
     def show(self):
         displayed : int = self.limit * self.page if self.limit * self.page < self.result.total else self.result.total
@@ -114,3 +114,9 @@ class ProblemsetQuestionList(QueryTemplate):
         for item in self.result.questions:
             table.add_row(item.questionId, item.title, item.status, item.difficulty)
         print(table)
+        
+    def get_data(self):
+        self.graphql_query = GraphQLQuery(self.query, self.params)
+        self.result = self.leet_API.post_query(self.graphql_query)
+        
+        return self.result['data']
