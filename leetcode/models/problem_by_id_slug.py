@@ -57,13 +57,12 @@ class ProblemInfo(QueryTemplate):
         self.parse_args(args)          
         if getattr(args, 'random'):
             total = ProblemTotalCount({'status': 'NOT_STARTED'}).__call__()
-        
             from random import randint
             with Loader('Selecting random problem...', ''):
                 choosen_number = randint(1, total)
                 while True:
                     list_instance = ProblemsetQuestionList({'status': 'NOT_STARTED'}, limit=1, skip=choosen_number - 1)
-                    problem = list_instance.get_data()['problemsetQuestionList']['questions'][0]
+                    problem = list_instance.fetch_data()['problemsetQuestionList']['questions'][0]
                     if not problem['paidOnly']:
                         break
                     choosen_number = randint(1, total)

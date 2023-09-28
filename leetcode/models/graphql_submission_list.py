@@ -3,23 +3,23 @@ from leetcode.models.problem_by_id_slug import ProblemInfo
 
 
 @dataclass
-class Submission():
-    id: int
-    title: str
-    titleSlug: str
-    statusDisplay: str
-    runtime: str
-    memory: str
-    langName: str
-    
-@dataclass
 class QuestionSubmisstionList(JSONWizard):
+    @dataclass
+    class Submission():
+        id: int
+        title: str
+        titleSlug: str
+        statusDisplay: str
+        runtime: str
+        memory: str
+        langName: str
+    
     submissions: List[Submission]
     
     @classmethod
     def from_dict(cls, data):
         submissions_data = data['questionSubmissionList']['submissions']
-        submissions = [Submission(id=item.get('id'), 
+        submissions = [cls.Submission(id=item.get('id'), 
                                   title=item.get('title'), 
                                   titleSlug=item.get('titleSlug'), 
                                   statusDisplay=item.get('statusDisplay'), 
@@ -28,7 +28,6 @@ class QuestionSubmisstionList(JSONWizard):
                                   langName=item.get('langName')) 
                        for item in submissions_data]
         return cls(submissions=submissions)
-
 
 
 class SubmissionList(QueryTemplate):

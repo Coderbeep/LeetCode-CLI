@@ -2,17 +2,16 @@ from leetcode.models import *
 from leetcode.models.graphql_question_content import QuestionContent
 from leetcode.models.graphql_question_info_table import QuestionInfoTable
 
-
-@dataclass
-class Question():
-    difficulty: str
-    status: str
-    title: str
-    titleSlug: str
-    frontendQuestionId: int
-
 @dataclass
 class QueryResult(JSONWizard):
+    @dataclass
+    class Question():
+        difficulty: str
+        status: str
+        title: str
+        titleSlug: str
+        frontendQuestionId: int
+        
     date: str
     userStatus: str
     link: str
@@ -26,7 +25,7 @@ class QueryResult(JSONWizard):
         
         
         question = data['activeDailyCodingChallengeQuestion']['question']
-        question = Question(title=question.get('title'),
+        question = cls.Question(title=question.get('title'),
                              status=question.get('status'),
                              titleSlug=question.get('titleSlug'),
                              difficulty=question.get('difficulty'),
@@ -35,41 +34,40 @@ class QueryResult(JSONWizard):
         return cls(date=date, userStatus=userStatus, link=link, question=question)  
 
 class QuestionOfToday(QueryTemplate):
+    """ A class representing the LeetCode question of the day. """
     def __init__(self):
         super().__init__()
         # Instance specific variables
-        self.contentFlag = False
-        self.browserFlag = False
+        self.contentFlag: bool = False
+        self.browserFlag: bool = False
         self.title_slug: str = None
-        
-        self.params = {}
-        self.graphql_query = None
-        self.result = None
-        
-    def parse_args(self, args):
-        if getattr(args, 'browser'): 
-            self.browserFlag = True
-        if getattr(args, 'contents'):
-            self.contentFlag = True
     
-    def execute(self, args):
+        self.data = None
+    
+    def _execute(self, args):
+        """ Executes the query with the given arguments and displays the result.
+
+        Args:
+            args (argparse.Namespace): The arguments passed to the query.
+        """
         with Loader('Fetching question of the day...', ''):
-            self.parse_args(args)
+            self.__parse_args(args)
             
-            self.graphql_query = GraphQLQuery(self.query, self.params)
-            self.result = self.leet_API.post_query(self.graphql_query)
-            self.result = QueryResult.from_dict(self.result['data'])
-            self.title_slug = self.result.question.titleSlug
+            self.graphql_query = GraphQLQuery(self.query, {})
+            self.data = self.leet_API.post_query(self.graphql_query)
+            self.data = QueryResult.from_dict(self.result['data'])
+            self.title_slug = self.data.question.titleSlug
         self.show()
-    
-    
+
     def show(self):
+        """ Shows the question information and content or opens the question in a browser. 
+        The displayed information depends on the flags passed to the command line.
+        """
         question_info_table = QuestionInfoTable(self.title_slug)
         if self.contentFlag:
             print(question_info_table)
-            print()
-            with Loader('Fetching question content...', ''):
-                question_content = QuestionContent(self.title_slug)
+            print('\n')
+            question_content = QuestionContent(self.title_slug)
             print(question_content)
         elif self.browserFlag:
             print(question_info_table)
@@ -78,6 +76,17 @@ class QuestionOfToday(QueryTemplate):
             self.open_in_browser(link)
         else:
             print(question_info_table)
+        
+    def __parse_args(self, args):
+        """ Parses the command line arguments.
+
+        Args:
+            args (argparse.Namespace): The command line arguments.
+        """
+        if getattr(args, 'browser'): 
+            self.browserFlag = True
+        if getattr(args, 'contents'):
+            self.contentFlag = True
 
 
         

@@ -80,7 +80,7 @@ def main():
     
     if hasattr(args, 'func'):
         command_instance = args.func()
-        command_instance.execute(args)
+        command_instance._execute(args)  # call the private method __execute
     else:
         print("Unknown command. Use 'leet --help' for available commands.")
 

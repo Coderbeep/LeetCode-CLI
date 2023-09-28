@@ -1,27 +1,127 @@
 from leetcode.models import *
 
 class QuestionContent(QueryTemplate):
-    def __init__(self, titleSlug):
+    """ A class to represent a LeetCode problem content. 
+    
+    Args:
+        title_slug (str): The title slug of the problem. """
+    
+    def __init__(self, title_slug):
         super().__init__()
-        self.params = {'titleSlug': titleSlug}
-        self.result = None
+        # Instance-specific variables
+        self._title_slug = title_slug
+        self._data = None
+        self._params = {'titleSlug': title_slug}
+        self._data_fetched: bool = False
         
-        self.execute()
-        self.question_panels = LeetQuestionToSections(self.result)
+        self.question_panels: List[rich.panel.Panel] = []
+        self.fetch_data(self.title_slug)
         
-    def execute(self):
-        self.graphql_query = GraphQLQuery(self.query, self.params)
-        self.result = self.leet_API.post_query(self.graphql_query)
-        if 'errors' in self.result:
-            console.print("Cannot find the question with specified title slug. Please try again.", style=ALERT)
+    def fetch_data(self, title_slug: str = None) -> Dict:
+        """ Fetches the content data for the problem.
+        
+        Args:
+            parameters (dict, optional): Parameters to pass to the query. Defaults to None.
+            
+        Returns:
+            Dict: The content data for the problem.
+        """
+        try:
+            with Loader('Fetching question details...', ''):
+                parameters = self.params
+                if title_slug is None:
+                    parameters = self.params
+                elif title_slug != self.title_slug:
+                    self.title_slug = title_slug
+                    self.params = {'titleSlug': title_slug}
+                    parameters = self.params
+                if self.data_fetched:
+                    return self._data
+
+                graphql_query = GraphQLQuery(self.query, parameters)
+                response = self.leet_API.post_query(graphql_query)
+                if response['data']['question'] is None:
+                    raise Exception('There is no question with title slug: ' + title_slug)
+                self.data = response['data']['question']['content']
+                self.data_fetched = True
+                self.params = parameters
+                return self.data
+        except Exception as e:
+            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
             sys.exit(1)
-        else:
-            self.result = self.result['data']['question']['content']
     
     def show(self):
-        for x in self.question_panels:
-            console.print(x)
+        """ Displays the question panels for the current LeetCode question.
+
+        If the data has not been fetched yet, an exception is raised.
+        """
+        if self.data_fetched:
+            self.question_panels = LeetQuestionToSections(self.data)
+            for x in self.question_panels:
+                console.print(x)
+        else:
+            raise Exception("Data is not fetched yet.")
     
     def __rich_console__(self, console: Console, options):
-        for x in self.question_panels:
-            yield x
+        """ Renders the question content in a rich console.
+
+        If the data has been fetched, the question panels are generated using the LeetQuestionToSections function and yielded.
+        If the data has not been fetched, an exception is raised.
+
+        Args:
+            console (Console): The console to render the content in.
+            options: Additional options for rendering the content.
+
+        Raises:
+            Exception: If the data has not been fetched yet.
+        """
+        if self.data_fetched:
+            self.question_panels = LeetQuestionToSections(self.data)
+            for x in self.question_panels:
+                yield x
+        else:
+            # raise exception that data is not fetched
+            raise Exception("Data is not fetched yet.")
+            
+    @property
+    def data(self):
+        return self._data
+    
+    @data.setter
+    def data(self, data: dict):
+        if data is None:
+            raise ValueError(f"Data for question with title slug '{self.title_slug}' is None.")
+        self._data = data
+    
+    @property
+    def params(self):
+        return self._params
+    
+    @params.setter
+    def params(self, params: dict):
+        self._params = params
+        
+    @property
+    def title_slug(self):
+        return self._title_slug
+    
+    @title_slug.setter
+    def title_slug(self, title_slug: str):
+        self._title_slug = title_slug
+        self._data_fetched = False
+        self.params = {'titleSlug': title_slug}
+        
+    @property
+    def data_fetched(self):
+        return self._data_fetched
+    
+    @data_fetched.setter
+    def data_fetched(self, data_fetched: bool):
+        self._data_fetched = data_fetched
+        
+        
+if __name__ == '__main__':
+    content = QuestionContent('two-sumfsdf')
+    print(content)
+    content.fetch_data('add-two-integers')
+    print(content)

@@ -28,9 +28,17 @@ class QueryTemplate():
     def get_query(self):
         self.query = self.parser.extract_query(self.query_name)
 
-    def execute(self):
-        """ Method to handle the args passed by the 
-            argument parser. """
+    def execute(self, args):
+        """ 
+        Method to handle the args passed by the argument parser. Fetches the data
+        and displays it in the terminal.
+
+        Args:
+            args (argparse.Namespace): A list of arguments passed by the argument parser.
+
+        Returns:
+            None
+        """
         pass
 
     def open_in_browser(self, link):
