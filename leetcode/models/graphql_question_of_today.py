@@ -55,7 +55,7 @@ class QuestionOfToday(QueryTemplate):
             
             self.graphql_query = GraphQLQuery(self.query, {})
             self.data = self.leet_API.post_query(self.graphql_query)
-            self.data = QueryResult.from_dict(self.result['data'])
+            self.data = QueryResult.from_dict(self.data['data'])
             self.title_slug = self.data.question.titleSlug
         self.show()
 
@@ -71,7 +71,7 @@ class QuestionOfToday(QueryTemplate):
             print(question_content)
         elif self.browserFlag:
             print(question_info_table)
-            link = self.config.host + self.result.link
+            link = self.config.host + self.data.link
             print(f'Link to the problem: {link}')
             self.open_in_browser(link)
         else:

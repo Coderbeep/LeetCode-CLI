@@ -31,6 +31,7 @@ class QuestionSubmisstionList(JSONWizard):
 
 
 class SubmissionList(QueryTemplate):
+    """ A class representing a list of LeetCode submissions for given problem. """
     def __init__(self):
         super().__init__()
         # Instance specific variables
@@ -39,27 +40,22 @@ class SubmissionList(QueryTemplate):
         self.submission_download = False
         
         self.graphql_query = None
-        self.result = None  
+        self.data = None  
         self.params = {'offset': 0, 'limit': 20, 'lastKey': None, 'questionSlug': None}
     
-    def parse_args(self, args):
-        self.question_id = args.id
-        self.params['questionSlug'] = ProblemInfo.get_title_slug(self.question_id)
+    def _execute(self, args):
+        """ Executes the query with the given arguments and displays the result. 
         
-        if getattr(args, 'show'):
-            self.show_terminal = True
-            
-        if getattr(args, 'download'):
-            self.submission_download = True
-        
-    def execute(self, args):
+        Args:
+            args (argparse.Namespace): The arguments passed to the query.
+        """
         try:
             with Loader('Fetching submission list...', ''):
-                self.parse_args(args)
+                self.__parse_args(args)
                 self.graphql_query = GraphQLQuery(self.query, self.params)
-                self.result = self.leet_API.post_query(self.graphql_query)
-                self.result = QuestionSubmisstionList.from_dict(self.result['data'])
-                if not self.result.submissions:
+                self.data = self.leet_API.post_query(self.graphql_query)
+                self.data = QuestionSubmisstionList.from_dict(self.data['data'])
+                if not self.data.submissions:
                     raise ValueError("Apparently you don't have any submissions for this problem.")
             self.show()
             
@@ -72,29 +68,39 @@ class SubmissionList(QueryTemplate):
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
         
     def show(self):
+        """ Displays the query result in a table. """
+        
         table = LeetTable()
-        table.add_column('ID')
-        # table.add_column('Title')
+        table.add_column('Submission ID')
         table.add_column('Status')
         table.add_column('Runtime')
         table.add_column('Memory')
         table.add_column('Language')
         
-        submissions = self.result.submissions
+        submissions = self.data.submissions
         table.title = f"Submissions for problem [blue]{submissions[0].title}"
         for x in submissions:
             table.add_row(x.id, x.statusDisplay, x.runtime, x.memory, x.langName)
         console.print(table)
         
-    
     @staticmethod
     def fetch_accepted(submissions):
+        """ Fetches the latest accepted submission from the list of submissions. 
+        
+        Args:
+            submissions (List[Submission]): The list of submissions.
+            
+        Returns:
+            Submission: The latest accepted submission. If no accepted submissions are found, None is returned."""
         return next((x for x in submissions if x.statusDisplay == 'Accepted'), None)
     
     def show_code(self):
+        """ Displays the code of the latest accepted submission. 
+        
+        If no accepted submissions are found, an exception is raised. """
         try:
             with Loader('Fetching latest accepted code...', ''):
-                acc_submission = self.fetch_accepted(self.result.submissions)
+                acc_submission = self.fetch_accepted(self.data.submissions)
                 
                 if not acc_submission:
                     raise ValueError("No accepted submissions found.")
@@ -114,9 +120,13 @@ class SubmissionList(QueryTemplate):
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
         
     def download_submission(self):
+        """ Downloads the code of the latest accepted submission. 
+        
+        If no accepted submissions are found, an exception is raised.
+        The code is saved in a file named as follows: [titleSlug].[submissionId].py """
         try:
             with Loader('Downloading latest accepted code...', ''):
-                acc_submission = self.fetch_accepted(self.result.submissions)
+                acc_submission = self.fetch_accepted(self.data.submissions)
             
                 if not acc_submission:
                     raise ValueError("No accepted submissions found.")
@@ -134,6 +144,21 @@ class SubmissionList(QueryTemplate):
             console.print(f"✅ File saved as '{file_name}'")
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
+    
+    def __parse_args(self, args):
+        """ Parses the arguments passed to the query. 
+        
+        Args:
+            args (argparse.Namespace): The arguments passed to the query.
+        """
+        self.question_id = args.id
+        self.params['questionSlug'] = ProblemInfo.get_title_slug(self.question_id)
+        
+        if getattr(args, 'show'):
+            self.show_terminal = True
+            
+        if getattr(args, 'download'):
+            self.submission_download = True
             
         
         
