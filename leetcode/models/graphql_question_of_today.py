@@ -43,8 +43,23 @@ class QuestionOfToday(QueryTemplate):
         self.title_slug: str = None
     
         self.data = None
+        
+    def fetch_data(self) -> Dict:
+        """ Fetches the question of the day data.
+
+        Returns:
+            Dict: The question of the day data.
+        """
+        try:
+            with Loader('Fetching question of the day...', ''):
+                graphql_query = GraphQLQuery(self.query, {})
+                response = self.leet_API.post_query(graphql_query)
+                return response['data']
+        except Exception as e:
+            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
+            sys.exit(1)
     
-    def _execute(self, args):
+    def _execute(self, args) -> None:
         """ Executes the query with the given arguments and displays the result.
 
         Args:
@@ -59,7 +74,7 @@ class QuestionOfToday(QueryTemplate):
             self.title_slug = self.data.question.titleSlug
         self.show()
 
-    def show(self):
+    def show(self) -> None:
         """ Shows the question information and content or opens the question in a browser. 
         The displayed information depends on the flags passed to the command line.
         """
@@ -77,7 +92,7 @@ class QuestionOfToday(QueryTemplate):
         else:
             print(question_info_table)
         
-    def __parse_args(self, args):
+    def __parse_args(self, args) -> None:
         """ Parses the command line arguments.
 
         Args:

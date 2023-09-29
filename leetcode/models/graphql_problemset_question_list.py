@@ -1,5 +1,9 @@
 from leetcode.models import *
 
+""" This module contains the QueryTemplate class for the problemsetQuestionList query. 
+    The class is used to fetch a list of LeetCode problems by the 'list' command.
+    """
+
 @dataclass
 class QueryResult(JSONWizard):
     @dataclass
@@ -53,29 +57,30 @@ class ProblemsetQuestionList(QueryTemplate):
             - 'difficulty' (str, optional): Difficulty level. Valid values: 'EASY', 'MEDIUM', 'HARD'.
             - 'status' (str, optional): Status of the problem. Valid values: 'NOT_STARTED', 'TRIED', 'AC'.
         limit (int, optional): Maximum number of problems to retrieve. Defaults to None.
+            If not provided, the value is taken from the user config file.
         skip (int, optional): Number of problems to skip. Defaults to 0.
     """
 
     def __init__(self, filters={}, limit=None, skip=0):
         super().__init__()
-
         # Instance specific variables
         self.page : int = 1
         self.max_page : int = 0
         self.filters = filters
         self.limit = limit or self.config.user_config.get('question_list_limit')
         self.skip = skip
+        self._data_fetched: bool = False
         
-        self.params = {'categorySlug': "", 
+        self._params = {'categorySlug': "", 
                        'skip':self.skip, 
                        'limit': self.limit, 
                        'filters': self.filters}
-        
-        self.graphql_query = None
-        self.result = None
+
+        self.data = None
         
     def fetch_data(self, parameters: Dict = None) -> QueryResult:
-        """ Fetches the data from the LeetCode API.
+        """ Fetches the data from the LeetCode API. 
+            Updates the state of the object.
 
         Args:
             parameters (dict, optional): Parameters to pass to the query. Defaults to None.
@@ -83,14 +88,22 @@ class ProblemsetQuestionList(QueryTemplate):
         Returns:
             QueryResult: The result of the query.
         """
-
-        if parameters is None:
-            parameters = self.params
-        with Loader('Fetching problems...', ''):
-            self.graphql_query = GraphQLQuery(self.query, parameters)
-            self.result = self.leet_API.post_query(self.graphql_query) # Take the response from the API
-            self.result = QueryResult.from_dict(self.result['data'])
-        return self.result
+        try: 
+            with Loader('Fetching problems...', ''):
+                if parameters is not None and parameters != self.params:
+                    self.params = parameters
+                
+                if self.data_fetched:
+                    return self.data
+            
+                self.graphql_query = GraphQLQuery(self.query, parameters)
+                self.data = self.leet_API.post_query(self.graphql_query) # Take the response from the API
+                self.data = QueryResult.from_dict(self.data['data'])
+                self.data_fetched = True
+                return self.data
+        except Exception as e:
+            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
+            sys.exit(1)
         
     def _execute(self, args):
         """ Executes the query with the given arguments and displays the result.
@@ -100,32 +113,31 @@ class ProblemsetQuestionList(QueryTemplate):
         """
 
         self.__parse_args(args)
-        self.result = self.fetch_data()
-        self.show(self.result)
+        self.data = self.fetch_data()
+        self.show(self.data)
 
-    def show(self, query_result: Optional[QueryResult] = None) -> None:
+    def show(self) -> None:
         """ Displays the query result in a table.
 
         Args:
             query_result (QueryResult, optional): The result of the query. Defaults to None.
                 If the result is None, the method will try to fetch the data with defauly parameters and than display it.
         """
-
-        if query_result is None:
-            query_result = self.fetch_data()
-        
-        displayed : int = self.limit * self.page if self.limit * self.page < query_result.total else self.result.total
-        
-        table = LeetTable(title=f'Total number of problems retrieved: {query_result.total}\n',
-                            caption=f"Page #{self.page} / ({displayed}/{self.result.total})")
-        
-        table.add_column('ID')
-        table.add_column('Title')
-        table.add_column('Status')
-        table.add_column('Difficulty')
-        for item in query_result.questions:
-            table.add_row(item.questionId, item.title, item.status, item.difficulty)
-        console.print(table)
+        if self.data_fetched:   
+            displayed : int = self.limit * self.page if self.limit * self.page < self.data.total else self.data.total
+            
+            table = LeetTable(title=f'Total number of problems retrieved: {self.data.total}\n',
+                                caption=f"Page #{self.page} / ({displayed}/{self.data.total})")
+            
+            table.add_column('ID')
+            table.add_column('Title')
+            table.add_column('Status')
+            table.add_column('Difficulty')
+            for item in self.data.questions:
+                table.add_row(item.questionId, item.title, item.status, item.difficulty)
+            console.print(table)
+        else:
+            raise Exception("Data is not fetched yet.")
     
     def __validate_page(self):
         """ Validates the current page number.
@@ -161,3 +173,20 @@ class ProblemsetQuestionList(QueryTemplate):
         self.params['skip'] = self.limit * self.page - self.limit
         
         self.__validate_page()
+        
+    @property
+    def data_fetched(self):
+        return self._data_fetched
+    
+    @data_fetched.setter
+    def data_fetched(self, data_fetched: bool):
+        self._data_fetched = data_fetched
+    
+    @property
+    def params(self):
+        return self._params
+    
+    @params.setter
+    def params(self, params: dict):
+        self._params = params
+        self.data_fetched = False

@@ -4,9 +4,9 @@ class QuestionContent(QueryTemplate):
     """ A class to represent a LeetCode problem content. 
     
     Args:
-        title_slug (str): The title slug of the problem. """
+        title_slug (str, optional): The title slug of the problem. If provided the data is fetched when the object is created. Defaults to None."""
     
-    def __init__(self, title_slug):
+    def __init__(self, title_slug: str = None):
         super().__init__()
         # Instance-specific variables
         self._title_slug = title_slug
@@ -15,36 +15,36 @@ class QuestionContent(QueryTemplate):
         self._data_fetched: bool = False
         
         self.question_panels: List[rich.panel.Panel] = []
-        self.fetch_data(self.title_slug)
+        
+        if title_slug is not None:
+            self.fetch_data(self.title_slug)
         
     def fetch_data(self, title_slug: str = None) -> Dict:
         """ Fetches the content data for the problem.
         
         Args:
-            parameters (dict, optional): Parameters to pass to the query. Defaults to None.
+            title_slug (str, optional): The title slug of the problem. Defaults to None.
             
         Returns:
             Dict: The content data for the problem.
         """
         try:
             with Loader('Fetching question details...', ''):
-                parameters = self.params
-                if title_slug is None:
-                    parameters = self.params
-                elif title_slug != self.title_slug:
+                # If provided title slug does not change anything, return the data
+                if title_slug is not None and title_slug != self.title_slug:
                     self.title_slug = title_slug
-                    self.params = {'titleSlug': title_slug}
-                    parameters = self.params
-                if self.data_fetched:
-                    return self._data
 
-                graphql_query = GraphQLQuery(self.query, parameters)
+                if self.data_fetched:
+                    return self.data
+
+                graphql_query = GraphQLQuery(self.query, self.params)
                 response = self.leet_API.post_query(graphql_query)
+                
                 if response['data']['question'] is None:
                     raise Exception('There is no question with title slug: ' + title_slug)
+                
                 self.data = response['data']['question']['content']
                 self.data_fetched = True
-                self.params = parameters
                 return self.data
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
@@ -121,7 +121,7 @@ class QuestionContent(QueryTemplate):
         
         
 if __name__ == '__main__':
-    content = QuestionContent('two-sumfsdf')
+    content = QuestionContent('two-sum')
     print(content)
     content.fetch_data('add-two-integers')
     print(content)

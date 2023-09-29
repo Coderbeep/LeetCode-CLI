@@ -16,6 +16,7 @@ from leetcode.models.submit import SendSubmission
 # TODO: add a command to show the solution in the browser
 # TODO: problem with import in synced code or code to submit
 # TODO: random problem selector (from not accepted problems)
+# TODO: check the changes in question_content and apply them to the code in other files
 
 def positive_integer(value):
     try:

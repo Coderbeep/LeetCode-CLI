@@ -33,38 +33,37 @@ class QuestionInfoTable(QueryTemplate):
     
     Args:
         titleSlug (str): The title slug of the question to fetch data for.
+            If provided the data is fetched when the object is created. Defaults to None.
     """
     
-    def __init__(self, titleSlug):
+    def __init__(self, title_slug: str = None):
         super().__init__()
         # Instance-specific variables
-        self._title_slug = titleSlug
+        self._title_slug = title_slug
         self._data = None
-        self._params = {'titleSlug': titleSlug}
+        self._params = {'titleSlug': title_slug}
         self._data_fetched: bool = False
         
-        self.fetch_data(self.title_slug)
+        if title_slug is not None:
+            self.fetch_data(self.title_slug)
     
-    def fetch_data(self, titleSlug: str = None) -> Dict:
+    def fetch_data(self, title_slug: str = None) -> Dict:
         try:
             with Loader('Fetching question details...', ''):
-                parameters = self.params
-                if titleSlug is None:
-                    parameters = self.params
-                elif titleSlug != self.title_slug:
-                    self.title_slug = titleSlug
-                    self.params = {'titleSlug': titleSlug}
-                    parameters = self.params
+                if title_slug is not None and title_slug != self.title_slug:
+                    self.title_slug = title_slug
+                
                 if self.data_fetched:
-                    return self._data
+                    return self.data
 
-                graphql_query = GraphQLQuery(self.query, parameters)
+                graphql_query = GraphQLQuery(self.query, self.params)
                 response = self.leet_API.post_query(graphql_query)
+                
                 if response['data']['question'] is None:
-                    raise Exception('There is no question with title slug: ' + titleSlug)
+                    raise Exception('There is no question with title slug: ' + title_slug)
+                
                 self.data = Question.from_dict(response['data'])
                 self.data_fetched = True
-                self.params = parameters
                 return self.data
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)

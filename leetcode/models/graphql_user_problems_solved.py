@@ -5,29 +5,29 @@ from leetcode.models import *
 
 # TODO: Add the submission ID into the table, so that the user can copy paste that to download the submitted code
 @dataclass
-class DifficultyCount:
-    difficulty: str
-    count: int
-
-@dataclass
-class DifficultyPercentage:
-    # when the leetcode account does not have enough completed exercises
-    # the percentage is not calculated, hence the 'Optional' part
-    difficulty: str
-    percentage: Optional[float]
-    
-@dataclass
-class DifficultySubmission:
-    difficulty: str
-    count: int
-
-@dataclass
 class MatchedUser:
+    @dataclass
+    class DifficultyPercentage:
+        # when the leetcode account does not have enough completed exercises
+        # the percentage is not calculated, hence the 'Optional' part
+        difficulty: str
+        percentage: Optional[float]
+        
+    @dataclass
+    class DifficultySubmission:
+        difficulty: str
+        count: int
+    
     problemsSolvedBeatsStats: List[DifficultyPercentage]
     submitStatsGlobal: Dict[str, List[DifficultySubmission]]
 
 @dataclass
 class QueryResult(JSONWizard):
+    @dataclass
+    class DifficultyCount:
+        difficulty: str
+        count: int
+    
     allQuestionsCount: List[DifficultyCount] # questions count according to difficulty
     matchedUser: MatchedUser
     

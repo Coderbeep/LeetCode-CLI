@@ -36,12 +36,33 @@ class SubmissionList(QueryTemplate):
         super().__init__()
         # Instance specific variables
         self.question_id: int = None
-        self.show_terminal = False
-        self.submission_download = False
+        self.show_terminal: bool = False
+        self.submission_download: bool = False
         
-        self.graphql_query = None
         self.data = None  
         self.params = {'offset': 0, 'limit': 20, 'lastKey': None, 'questionSlug': None}
+        
+    def fetch_data(self, question_id: int = None) -> Dict:
+        """ Fetches the submission list data for the problem.
+
+        Args:
+            question_id (int, optional): The question id of the problem. Defaults to None.
+            
+        Returns:
+            Dict: The submission list data for the problem.
+        """
+        try:
+            with Loader('Fetching submission list...', ''):
+                if question_id is not None and question_id != self.question_id:
+                    self.question_id = question_id
+                    self.params['questionSlug'] = ProblemInfo.get_title_slug(self.question_id)
+                
+                graphql_query = GraphQLQuery(self.query, self.params)
+                response = self.leet_API.post_query(graphql_query)
+                return response['data']
+        except Exception as e:
+            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
+            sys.exit(1)
     
     def _execute(self, args):
         """ Executes the query with the given arguments and displays the result. 
