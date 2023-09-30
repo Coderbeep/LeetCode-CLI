@@ -4,8 +4,13 @@ from leetcode.leet_api import LeetAPI
 import os
 
 class QueryTemplate():
+    session_checked =  False
+    
     def __init__(self):
         self.config = Configuration()
+        if not QueryTemplate.session_checked:
+            self.config.check_session_validity()
+            
         self.leet_API = LeetAPI(self.config)
         self.parser = Parser()
         

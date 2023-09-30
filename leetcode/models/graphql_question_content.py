@@ -19,7 +19,7 @@ class QuestionContent(QueryTemplate):
         if title_slug is not None:
             self.fetch_data(self.title_slug)
         
-    def fetch_data(self, title_slug: str = None) -> Dict:
+    def fetch_data(self, title_slug) -> Dict:
         """ Fetches the content data for the problem.
         
         Args:

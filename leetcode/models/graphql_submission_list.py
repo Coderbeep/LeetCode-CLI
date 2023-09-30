@@ -35,14 +35,16 @@ class SubmissionList(QueryTemplate):
     def __init__(self):
         super().__init__()
         # Instance specific variables
-        self.question_id: int = None
         self.show_terminal: bool = False
         self.submission_download: bool = False
         
-        self.data = None  
-        self.params = {'offset': 0, 'limit': 20, 'lastKey': None, 'questionSlug': None}
+        self._question_id: int = None
+        self._data = None  
+        self._params = {'offset': 0, 'limit': 20, 'lastKey': None, 'questionSlug': None}
+        self._data_fetched: bool = False
         
-    def fetch_data(self, question_id: int = None) -> Dict:
+    def fetch_data(self, question_id) -> Dict:
+        # TODO: make the parameters usable
         """ Fetches the submission list data for the problem.
 
         Args:
@@ -55,16 +57,20 @@ class SubmissionList(QueryTemplate):
             with Loader('Fetching submission list...', ''):
                 if question_id is not None and question_id != self.question_id:
                     self.question_id = question_id
-                    self.params['questionSlug'] = ProblemInfo.get_title_slug(self.question_id)
+                
+                if self.data_fetched:
+                    return self.data
                 
                 graphql_query = GraphQLQuery(self.query, self.params)
                 response = self.leet_API.post_query(graphql_query)
-                return response['data']
+                self.data = QuestionSubmisstionList.from_dict(response['data'])
+                self.data_fetched = True
+                return self.data
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
             sys.exit(1)
     
-    def _execute(self, args):
+    def _execute(self, args) -> None:
         """ Executes the query with the given arguments and displays the result. 
         
         Args:
@@ -88,7 +94,7 @@ class SubmissionList(QueryTemplate):
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
         
-    def show(self):
+    def show(self) -> None:
         """ Displays the query result in a table. """
         
         table = LeetTable()
@@ -105,7 +111,7 @@ class SubmissionList(QueryTemplate):
         console.print(table)
         
     @staticmethod
-    def fetch_accepted(submissions):
+    def fetch_accepted(submissions) -> QuestionSubmisstionList.Submission:
         """ Fetches the latest accepted submission from the list of submissions. 
         
         Args:
@@ -115,7 +121,7 @@ class SubmissionList(QueryTemplate):
             Submission: The latest accepted submission. If no accepted submissions are found, None is returned."""
         return next((x for x in submissions if x.statusDisplay == 'Accepted'), None)
     
-    def show_code(self):
+    def show_code(self) -> None:
         """ Displays the code of the latest accepted submission. 
         
         If no accepted submissions are found, an exception is raised. """
@@ -140,7 +146,7 @@ class SubmissionList(QueryTemplate):
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
         
-    def download_submission(self):
+    def download_submission(self) -> None:
         """ Downloads the code of the latest accepted submission. 
         
         If no accepted submissions are found, an exception is raised.
@@ -166,7 +172,7 @@ class SubmissionList(QueryTemplate):
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
     
-    def __parse_args(self, args):
+    def __parse_args(self, args) -> None:
         """ Parses the arguments passed to the query. 
         
         Args:
@@ -181,5 +187,46 @@ class SubmissionList(QueryTemplate):
         if getattr(args, 'download'):
             self.submission_download = True
             
+    @property
+    def data(self):
+        return self._data
+    
+    @data.setter
+    def data(self, data: Dict):
+        self._data = data
+    
+    @property
+    def params(self):
+        return self._params
+    
+    @params.setter
+    def params(self, params: Dict):
+        self._params = params
+        self.data_fetched = False
         
+    @property
+    def data_fetched(self):
+        return self._data_fetched
+    
+    @data_fetched.setter
+    def data_fetched(self, data_fetched: bool):
+        self._data_fetched = data_fetched    
         
+    @property
+    def question_id(self):
+        return self._question_id
+    
+    @question_id.setter
+    def question_id(self, question_id: int):
+        self._question_id = question_id
+        self.data_fetched = False
+        self.params['questionSlug'] = ProblemInfo.get_title_slug(self.question_id)
+    
+
+if __name__ == '__main__':
+    submissions = SubmissionList()
+    submissions.fetch_data(6536534)
+    submissions.show()
+    
+    submissions.fetch_data(2)
+    submissions.show()

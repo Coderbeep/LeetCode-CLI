@@ -24,14 +24,14 @@ class UserConfig():
         with open(self.path, 'w') as yaml_file:
             yaml.dump(self.data, yaml_file, default_flow_style=False)
 
-    def execute(self, args):
+    def _execute(self, args):
         if args.config_key not in self.data['user_data']:
             print(f"Invalid key: {args.config_key}")
             return
         else:
             if getattr(args, 'config_key') and getattr(args, 'config_value'):
                 self.dump_key(args.config_key, args.config_value)
-                print('Configuration updated successfully.')
+                print('[green]Configuration updated successfully.')
               
 def check_session_response(session_id: str) -> bool:
     QUERY = """ query
@@ -76,8 +76,6 @@ def check_session_validity(path = CONFIG_PATH) -> bool:
     The default session_id is taken from the configuration file. """
 
 class Configuration():
-    session_checked =  False
-    
     def __init__(self, session_id: str = ''):
         self.host = 'https://leetcode.com'
         self.user_config = UserConfig()
@@ -92,10 +90,8 @@ class Configuration():
                                'Referer': self.host}
         self._cookies: dict = {'csrftoken': self._csrf_cookie,
                                'LEETCODE_SESSION': self.session_id}  
-        if not Configuration.session_checked:
-            self.__check_session_validity() 
     
-    def __check_session_validity(self):
+    def check_session_validity(self):
         QUERY = """ query
                 {
                     user {

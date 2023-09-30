@@ -32,50 +32,77 @@ class QueryResult(JSONWizard):
     matchedUser: MatchedUser
     
 class UserProblemsSolved(QueryTemplate):
+    """ A class to represent user's LeetCode statistics. """
+    
     def __init__(self):
         super().__init__()
-        self.params = {'username': ''}
-        self.graphql_query = None
-        self.result = None
+        # Instance specific variables
+        self._username: str = None
         
+        self._params = {'username': ''}
+        self._data = None
+        self._data_fetched: bool = False
         
-    def parse_args(self, args):
-        if getattr(args, 'username'):
-            self.params['username'] = getattr(args, 'username')
-        else:
-            username = self.config.user_config.get('username')
-            if username:
-                self.params['username'] = self.config.user_config.get('username')
-            else:
-                console.print("Username neither provided nor configured. Head to --help.", style=ALERT)
-                sys.exit(1)
-    
-    def execute(self, args):
+    def fetch_data(self, username: str) -> Dict:
+        """ Fetches the user's LeetCode statistics.
+        
+        Args:
+            username (str): The username of the user.
+            
+        Returns:
+            Dict: The user's LeetCode statistics.
+        """
         try:
-            with Loader('Fetching user stats...', ''):            
-                self.parse_args(args)
+            with Loader('Fetching user stats...', ''):
+                if username != None and username != self.username:
+                    self.username = username
                 
-                self.graphql_query = GraphQLQuery(self.query, self.params)
-                self.result = self.leet_API.post_query(self.graphql_query)
-                if 'errors' in self.result:
-                    raise Exception(self.result['errors'][0]['message'])
-                self.result = QueryResult.from_dict(self.result['data'])
-            self.show()
+                if self.data_fetched:
+                    return self.data
+                
+                graphql_query = GraphQLQuery(self.query, self.params)
+                response = self.leet_API.post_query(graphql_query)
+                if 'errors' in response:
+                    raise Exception(response['errors'][0]['message'])
+                self.data = QueryResult.from_dict(response['data'])
+                self.data_fetched = True
+                return self.data
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
-        self.recent_submissions()
+            sys.exit(1)
     
-    def show(self):
-        difficulties = [x.difficulty for x in self.result.allQuestionsCount]
-        question_counts = [x.count for x in self.result.allQuestionsCount]
-        beaten_stats = [x.percentage for x in self.result.matchedUser.problemsSolvedBeatsStats]
+    def _execute(self, args) -> None:
+        """ Executes the query with the given arguments and displays the result. 
+        
+        Args:
+            args (argparse.Namespace): The arguments passed to the query. """
+        try:
+            with Loader('Fetching user stats...', ''):            
+                self.__parse_args(args)
+                
+                self.graphql_query = GraphQLQuery(self.query, self.params)
+                self.data = self.leet_API.post_query(self.graphql_query)
+                if 'errors' in self.data:
+                    raise Exception(self.data['errors'][0]['message'])
+                self.data = QueryResult.from_dict(self.data['data'])
+            self.show()
+            self.recent_submissions()
+        except Exception as e:
+            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
+    
+    def show_stats(self) -> None:
+        """ Displays the user's LeetCode questions count. """
+        
+        difficulties = [x.difficulty for x in self.data.allQuestionsCount]
+        question_counts = [x.count for x in self.data.allQuestionsCount]
+        beaten_stats = [x.percentage for x in self.data.matchedUser.problemsSolvedBeatsStats]
         beaten_stats.insert(0, None)
         submit_counts = []
-        for diff, subm in self.result.matchedUser.submitStatsGlobal.items():
+        for diff, subm in self.data.matchedUser.submitStatsGlobal.items():
             for submission in subm:
                 submit_counts.append(submission.count)
         
-        table = LeetTable(title=self.params['username'] + "'s Leetcode Stats")
+        table = LeetTable(title=self.username + "'s Leetcode Stats")
         table.add_column('Difficulty')
         table.add_column('Question Count')
         table.add_column('Beaten Stats (%)')
@@ -84,9 +111,23 @@ class UserProblemsSolved(QueryTemplate):
         for diff, count, stats, subm in zip(difficulties, question_counts, beaten_stats, submit_counts):
             table.add_row(diff, str(count), str(stats), str(subm)) 
         console.print(table)
+    
+    def show(self) -> None:
+        """ Displays information about the user's LeetCode statistics. """
+        
+        self.show_stats()
+        self.recent_submissions()
 
     @staticmethod
     def time_ago(timestamp: int) -> str:
+        """ Returns the time difference between the current time and the given timestamp. 
+        
+        Args:
+            timestamp (int): The timestamp to compare with.
+        
+        Returns:
+            str: The time difference between the current time and the given timestamp. 
+        """
         current_time = datetime.now()
         timestamp_time = datetime.fromtimestamp(timestamp)
         time_difference = current_time - timestamp_time
@@ -106,7 +147,9 @@ class UserProblemsSolved(QueryTemplate):
             weeks = time_difference.days // 7
             return f"{weeks} week{'s' if weeks != 1 else ''} ago"
 
-    def recent_submissions(self):
+    def recent_submissions(self) -> None:
+        """ Displays the user's recent submissions in a table. 
+        The table contains the submission ID, the problem title and the time when the submission was made."""
         with Loader('Fetching recent submissions...', ''):
             self.submissions_query = self.parser.extract_query('recentAcSubmissions')
             self.subm_params = {'username': self.params['username'], 'limit': 10}
@@ -128,38 +171,61 @@ class UserProblemsSolved(QueryTemplate):
         print(table)
         
 
-# if __name__ == '__main__':
-    # from argparse import Namespace
-    # user = UserProblemsSolved()
-    # user.execute(Namespace(username='skygragon'))
-    # result = user.result
-    # question_counts = [x.count for x in result.allQuestionsCount][1:]
-    
-    # submit_counts = []
-    # for diff, subm in result.matchedUser.submitStatsGlobal.items():
-    #     for submission in subm:
-    #         submit_counts.append(submission.count)
-    # submit_counts = submit_counts[1:]
-    
-    # bars = []
-    # for x, y in zip(question_counts, submit_counts):
-    #     bar = styles.CustomBar(end=(y/x) * 100)
-    #     bars.append(bar)
+    def __parse_args(self, args):
+        """ Parses the arguments passed to the query. 
         
-    # result = user.recent_submissions()
-    # result = result['data']['recentAcSubmissionList']
+        Args:
+            args (argparse.Namespace): The arguments passed to the query.
+        """
+        if getattr(args, 'username'):
+            self.params['username'] = getattr(args, 'username')
+        else:
+            username = self.config.user_config.get('username')
+            if username:
+                self.params['username'] = self.config.user_config.get('username')
+            else:
+                console.print("Username neither provided nor configured. Head to --help.", style=ALERT)
+                sys.exit(1)
+
+    @property
+    def username(self) -> str:
+        return self._username
     
-    # table = LeetTable(title='Recent Submissions', width = 50)
-    # table.add_column('ID')
-    # table.add_column('Title')
-    # table.add_column('Time')
+    @username.setter
+    def username(self, username: str) -> None:
+        self._username = username
+        self.data_fetched = False
+        self.params['username'] = username
     
-    # for subm in result:
-    #     question_id = GetQuestionDetail(subm['titleSlug']).question_id
-    #     table.add_row(question_id, subm['title'], time_ago(int(subm['timestamp'])))
+    @property
+    def data_fetched(self) -> bool:
+        return self._data_fetched
+    
+    @data_fetched.setter
+    def data_fetched(self, value: bool) -> None:
+        self._data_fetched = value
         
-    # left_container = rich.containers.Renderables(bars)
-    # right_container = rich.containers.Renderables([table])
+    @property
+    def data(self) -> Dict:
+        return self._data
     
-    # columns = rich.columns.Columns([left_container, right_container], column_first=True)
-    # console.print(columns)
+    @data.setter
+    def data(self, data: Dict) -> None:
+        self._data = data
+        
+    @property
+    def params(self) -> Dict:
+        return self._params
+    
+    @params.setter
+    def params(self, params: Dict) -> None:
+        self._params = params
+        self.data_fetched = False
+        
+if __name__ == '__main__':
+    stats = UserProblemsSolved()
+    stats.fetch_data('skygragon')
+    stats.show()
+    
+    stats.fetch_data('coderbeep')
+    stats.show()

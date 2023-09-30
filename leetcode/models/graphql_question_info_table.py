@@ -47,7 +47,15 @@ class QuestionInfoTable(QueryTemplate):
         if title_slug is not None:
             self.fetch_data(self.title_slug)
     
-    def fetch_data(self, title_slug: str = None) -> Dict:
+    def fetch_data(self, title_slug) -> Dict:
+        """ Fetches the question data for the given title slug. 
+        
+        Args:
+            title_slug (str, optional): The title slug of the question to fetch data for. 
+                If provided the data is fetched when the object is created. Defaults to None.
+                
+        Returns:
+            Dict: The question data for the given title slug. {id , title, difficulty, status, categoryTitle}"""
         try:
             with Loader('Fetching question details...', ''):
                 if title_slug is not None and title_slug != self.title_slug:
@@ -69,7 +77,7 @@ class QuestionInfoTable(QueryTemplate):
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
             sys.exit(1)
     
-    def format_table(self, data: Question):
+    def format_table(self, data: Question) -> LeetTable:
         """ Formats the given question data into a LeetTable object.
 
         Args:
@@ -93,7 +101,7 @@ class QuestionInfoTable(QueryTemplate):
         
         return table
         
-    def show(self):
+    def show(self) -> None:
         """ Displays the question data in a LeetTable. 
         
         If the data has not been fetched yet, an exception is raised.
@@ -104,7 +112,7 @@ class QuestionInfoTable(QueryTemplate):
         else:
             raise Exception("Data is not fetched yet.")
     
-    def __rich_console__(self, console: Console, options):
+    def __rich_console__(self, console: Console, options) -> Table:
         """ Returns a Rich Table object for console output.
 
         Raises:

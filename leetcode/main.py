@@ -1,7 +1,7 @@
 import argparse
 
 # from leetcode.models import *
-from leetcode.configuration import UserConfig, check_session_validity
+from leetcode.configuration import UserConfig
 from leetcode.models.graphql_problemset_question_list import \
     ProblemsetQuestionList
 from leetcode.models.graphql_question_of_today import QuestionOfToday
@@ -17,6 +17,7 @@ from leetcode.models.submit import SendSubmission
 # TODO: problem with import in synced code or code to submit
 # TODO: random problem selector (from not accepted problems)
 # TODO: check the changes in question_content and apply them to the code in other files
+# TODO: use config without having to have a session
 
 def positive_integer(value):
     try:
@@ -87,5 +88,4 @@ def main():
 
 
 if __name__ == '__main__':
-    if check_session_validity():
-        main()
+    main()

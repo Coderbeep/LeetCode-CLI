@@ -18,11 +18,19 @@ class ProblemInfo(QueryTemplate):
         self.browserFlag = False
         self.fileFlag = False
         
-        self.title_slug: str = None
-        self.resuklt = None
+        self._question_id: int = None
+        self._title_slug: str = None
+        self._data = None
 
     @classmethod
     def get_title_slug(cls, question_id: int) -> str:
+        """ Returns the title slug of the problem with the given ID.
+        
+        Args:
+            question_id (int): The ID of the problem.
+            
+        Returns:
+            str: The title slug of the problem with the given ID."""
         response = cls.leet_api.get_request(cls.API_URL)
         for item in response.get('stat_status_pairs', []):
             if item['stat'].get('question_id') == question_id:
@@ -32,6 +40,13 @@ class ProblemInfo(QueryTemplate):
     
     @classmethod
     def get_id(cls, title_slug: str) -> int:
+        """ Returns the ID of the problem with the given slug.
+        
+        Args:
+            title_slug (str): The title slug of the problem.
+            
+        Returns:
+            int: The ID of the problem with the given slug."""
         response = cls.leet_api.get_request(cls.API_URL)
         for item in response.get('stat_status_pairs', []):
             if item['stat'].get('question__title_slug') == title_slug:
@@ -41,20 +56,40 @@ class ProblemInfo(QueryTemplate):
         
     @classmethod    
     def lookup_slug(cls, question_slug: str): 
+        """ Checks if the given slug is valid. 
+        
+        Args:
+            question_slug (str): The slug to check.
+        
+        Returns:
+            bool: True if the slug is valid, False otherwise."""
         response = cls.leet_api.get_request(cls.API_URL)
         for item in response.get('stat_status_pairs', []):
             if item['stat'].get('question__title_slug') == question_slug:
                 return True
         raise ValueError("Invalid slug has been provided. Please try again.")
 
-    def parse_args(self, args):
-        if getattr(args, 'browser'): 
-            self.browserFlag = True
-        if getattr(args, 'file'):
-            self.fileFlag = True
+    def fetch_data(self, question_id: str):
+        """ Fetches the question data for the given question ID. 
+        Args:
+            question_id (str): The question ID to fetch data for. 
+        """
+        try:
+            if question_id is not None and question_id != self.question_id:
+                self.question_id = question_id
+            
+            self.data = self.data if self.data is not None else self.leet_api.get_request(self.API_URL)
+            self.show()
+        except Exception as e:
+            console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
+            sys.exit(1)
 
-    def execute(self, args):
-        self.parse_args(args)          
+    def _execute(self, args):
+        """ Executes the query with the fiven arguments and displays the result. 
+        
+        Args:
+            args (argparse.Namespace): The arguments passed to the query."""
+        self.__parse_args(args)          
         if getattr(args, 'random'):
             total = ProblemTotalCount({'status': 'NOT_STARTED'}).__call__()
             from random import randint
@@ -76,9 +111,9 @@ class ProblemInfo(QueryTemplate):
         else:
             try:
                 with Loader('Fetching problem info...', ''):
-                    self.result = self.leet_api.get_request(self.API_URL)
+                    self.data = self.leet_api.get_request(self.API_URL)
                     if getattr(args, 'id'):
-                        for item in self.result.get('stat_status_pairs', []):
+                        for item in self.data.get('stat_status_pairs', []):
                             if item['stat'].get('question_id') == args.id:
                                 self.title_slug = item['stat'].get('question__title_slug', '')
                                 break
@@ -88,10 +123,17 @@ class ProblemInfo(QueryTemplate):
             except Exception as e:
                 console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
             if self.fileFlag:
-                self.create_submission_file()
+                self.create_submission_file(self.title_slug)
     
-    def create_submission_file(self):
-        question = GetQuestionDetail(self.title_slug)
+    @classmethod
+    def create_submission_file(cls, title_slug: str = None) -> None:
+        """ Creates a file with the problem content. 
+        The file is named as follows: <question_id>.<question_title_slug>.py
+        
+        Args:
+            title_slug (str): The title slug of the problem.
+        """
+        question = GetQuestionDetail(title_slug)
         file_name = f"{question.question_id}.{question.title_slug}.py"
         with open(file_name, 'w') as file:
             file.write(question.code_snippet)
@@ -109,3 +151,44 @@ class ProblemInfo(QueryTemplate):
             console.print(question_info_table)
             question_content = QuestionContent(self.title_slug)
             console.print(question_content)
+
+    def __parse_args(self, args) -> None:
+        """ Parses the arguments passed to the query. 
+        
+        Args:
+            args (argparse.Namespace): The arguments passed to the query. """
+        if getattr(args, 'browser'): 
+            self.browserFlag = True
+        if getattr(args, 'file'):
+            self.fileFlag = True
+            
+    @property
+    def data(self):
+        return self._data
+    
+    @data.setter
+    def data(self, data: Dict):
+        self._data = data
+        
+    @property
+    def title_slug(self):
+        return self._title_slug
+    
+    @title_slug.setter
+    def title_slug(self, title_slug: str):
+        self._title_slug = title_slug
+        
+    @property
+    def question_id(self):
+        return self._question_id
+    
+    @question_id.setter
+    def question_id(self, question_id: int):
+        self._question_id = question_id
+        self.title_slug = self.get_title_slug(question_id)
+        
+if __name__ == '__main__':
+    info = ProblemInfo()
+    info.fetch_data(1)
+    
+    info.fetch_data(2)

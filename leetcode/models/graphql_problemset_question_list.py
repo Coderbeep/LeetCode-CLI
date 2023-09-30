@@ -78,7 +78,7 @@ class ProblemsetQuestionList(QueryTemplate):
 
         self.data = None
         
-    def fetch_data(self, parameters: Dict = None) -> QueryResult:
+    def fetch_data(self, parameters: Dict) -> QueryResult:
         """ Fetches the data from the LeetCode API. 
             Updates the state of the object.
 
