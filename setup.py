@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='leetcode_cli',
+setup(name='pyleetcode-cli',
       version='0.1.0',
       description='A CLI tool to access LeetCode',
       author='Jakub Kubiak',
