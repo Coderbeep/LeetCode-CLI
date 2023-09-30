@@ -40,7 +40,7 @@ class SendSubmission(QueryTemplate):
         # check if such slug exists
         ProblemInfo.lookup_slug(self.title_slug)
         
-    def execute(self, args):
+    def _execute(self, args):
         try:
             with Loader('Uploading submission...', ''):
                 self.parse_args(args)

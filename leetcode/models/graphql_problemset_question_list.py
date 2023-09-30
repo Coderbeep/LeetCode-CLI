@@ -113,7 +113,7 @@ class ProblemsetQuestionList(QueryTemplate):
         """
 
         self.__parse_args(args)
-        self.data = self.fetch_data()
+        self.data = self.fetch_data(self.params)
         self.show(self.data)
 
     def show(self) -> None:

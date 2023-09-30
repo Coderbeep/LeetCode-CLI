@@ -86,7 +86,6 @@ class UserProblemsSolved(QueryTemplate):
                     raise Exception(self.data['errors'][0]['message'])
                 self.data = QueryResult.from_dict(self.data['data'])
             self.show()
-            self.recent_submissions()
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
     
@@ -102,7 +101,7 @@ class UserProblemsSolved(QueryTemplate):
             for submission in subm:
                 submit_counts.append(submission.count)
         
-        table = LeetTable(title=self.username + "'s Leetcode Stats")
+        table = LeetTable(title=f"{self.username}'s Leetcode Stats")
         table.add_column('Difficulty')
         table.add_column('Question Count')
         table.add_column('Beaten Stats (%)')
@@ -180,8 +179,8 @@ class UserProblemsSolved(QueryTemplate):
         if getattr(args, 'username'):
             self.params['username'] = getattr(args, 'username')
         else:
-            username = self.config.user_config.get('username')
-            if username:
+            self.username = self.config.user_config.get('username')
+            if self.username:
                 self.params['username'] = self.config.user_config.get('username')
             else:
                 console.print("Username neither provided nor configured. Head to --help.", style=ALERT)
@@ -222,10 +221,10 @@ class UserProblemsSolved(QueryTemplate):
         self._params = params
         self.data_fetched = False
         
-if __name__ == '__main__':
-    stats = UserProblemsSolved()
-    stats.fetch_data('skygragon')
-    stats.show()
+# if __name__ == '__main__':
+#     stats = UserProblemsSolved()
+#     stats.fetch_data('skygragon')
+#     stats.show()
     
-    stats.fetch_data('coderbeep')
-    stats.show()
+#     stats.fetch_data('coderbeep')
+#     stats.show()
