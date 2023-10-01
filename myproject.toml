@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyleetcode-cli"
-version = "0.1.1"
+version = "0.1.0"
 authors = [
   { name="Jakub Kubiak", email="jakubkubiak234@gmail.com" },
 ]
