@@ -4,3 +4,4 @@ config.yaml
 *egg-info/
 build/
 dist/
+.github/
