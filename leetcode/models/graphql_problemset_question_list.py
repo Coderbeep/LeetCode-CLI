@@ -114,7 +114,7 @@ class ProblemsetQuestionList(QueryTemplate):
 
         self.__parse_args(args)
         self.data = self.fetch_data(self.params)
-        self.show(self.data)
+        self.show()
 
     def show(self) -> None:
         """ Displays the query result in a table.
