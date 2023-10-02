@@ -13,6 +13,8 @@ class QueryResult(JSONWizard):
         difficulty: str
         frontendQuestionId: int
         questionId: int
+        paidOnly: bool
+        titleSlug: str
     total: int
     questions: List[Question]
     
@@ -26,7 +28,9 @@ class QueryResult(JSONWizard):
                 status=item.get('status'),
                 difficulty=item.get('difficulty'),
                 frontendQuestionId=item.get('frontendQuestionId'),
-                questionId=item.get('questionId')
+                questionId=item.get('questionId'),
+                paidOnly=item.get('paidOnly'),
+                titleSlug=item.get('titleSlug'),
             )
             for item in questions_data
         ]
