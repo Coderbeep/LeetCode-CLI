@@ -1,6 +1,7 @@
 from leetcode.models import *
 from leetcode.models.graphql_question_content import QuestionContent
 from leetcode.models.graphql_question_info_table import QuestionInfoTable
+from leetcode.models.graphql_get_question_detail import GetQuestionDetail
 
 @dataclass
 class QueryResult(JSONWizard):
@@ -40,6 +41,7 @@ class QuestionOfToday(QueryTemplate):
         # Instance specific variables
         self.contentFlag: bool = False
         self.browserFlag: bool = False
+        self.fileFlag: bool = False
         self.title_slug: str = None
     
         self.data = None
@@ -72,7 +74,11 @@ class QuestionOfToday(QueryTemplate):
             self.data = self.leet_API.post_query(self.graphql_query)
             self.data = QueryResult.from_dict(self.data['data'])
             self.title_slug = self.data.question.titleSlug
+            
         self.show()
+        
+        if self.fileFlag:
+            self.create_file(self.title_slug)
 
     def show(self) -> None:
         """ Shows the question information and content or opens the question in a browser. 
@@ -91,6 +97,15 @@ class QuestionOfToday(QueryTemplate):
             self.open_in_browser(link)
         else:
             print(question_info_table)
+    
+    @classmethod      
+    def create_file(cls, title_slug: str) -> None:
+        """ Creates a file with the question content. """
+        question = GetQuestionDetail(title_slug)
+        filename = f"{question.question_id}.{question.title_slug}.py"
+        with open(filename, 'w') as file:
+            file.write(question.code_snippet)
+        console.print(f"File '{filename}' has been created.")
         
     def __parse_args(self, args) -> None:
         """ Parses the command line arguments.
@@ -102,6 +117,9 @@ class QuestionOfToday(QueryTemplate):
             self.browserFlag = True
         if getattr(args, 'contents'):
             self.contentFlag = True
+        if getattr(args, 'file'):
+            self.fileFlag = True
+        
 
 
         
