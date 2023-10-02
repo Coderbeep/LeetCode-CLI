@@ -18,6 +18,10 @@ from leetcode.models.submit import SendSubmission
 # TODO: random problem selector (from not accepted problems)
 # TODO: check the changes in question_content and apply them to the code in other files
 # TODO: use config without having to have a session
+# TODO: check all commands for errors
+# TODO: README - search - download - check - submit
+# TODO: leet problem -f      displays erors
+# TODO: submit with only id (or filename)
 
 def positive_integer(value):
     try:
@@ -62,6 +66,10 @@ def main():
     
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
     today_problem_parser.set_defaults(func=QuestionOfToday)
+    group_2 = today_problem_parser.add_mutually_exclusive_group()
+    group_2.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
+    group_2.add_argument('-c', '--contents', action='store_true', help='Display contents of the question in the terminal.')
+    group_2.add_argument('-f', '--file', action='store_true', help='Create a file with the problem content.')
     
     submission_parser = subparsers.add_parser('submission', help="Download submission code")
     submission_parser.add_argument('id', type=int, help='ID of the problem.')
@@ -74,9 +82,7 @@ def main():
     submission_parser.add_argument('path', type=str, help='Path to the file with code answer')
     submission_parser.set_defaults(func=SendSubmission)
         
-    group_2 = today_problem_parser.add_mutually_exclusive_group()
-    group_2.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
-    group_2.add_argument('-c', '--contents', action='store_true', help='Display contents of the question in the terminal.')
+    
     
     args = parser.parse_args()
     
