@@ -97,14 +97,14 @@ class ProblemInfo(QueryTemplate):
                 choosen_number = randint(1, total)
                 while True:
                     list_instance = ProblemsetQuestionList({'status': 'NOT_STARTED'}, limit=1, skip=choosen_number - 1)
-                    problem = list_instance.fetch_data()['problemsetQuestionList']['questions'][0]
-                    if not problem['paidOnly']:
+                    problem = list_instance.fetch_data(list_instance.params).questions[0]
+                    if not problem.paidOnly:
                         break
                     choosen_number = randint(1, total)
 
             with Loader('Fetching problem contents...', ''):
-                question_info_table = QuestionInfoTable(problem['titleSlug'])
-                question_content = QuestionContent(problem['titleSlug'])
+                question_info_table = QuestionInfoTable(problem.titleSlug)
+                question_content = QuestionContent(problem.titleSlug)
             console.print(question_info_table)
             console.print(question_content)
             
