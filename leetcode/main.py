@@ -15,13 +15,9 @@ from leetcode.models.submit import SendSubmission
 # TODO: add a command to show the solution in the terminal
 # TODO: add a command to show the solution in the browser
 # TODO: problem with import in synced code or code to submit
-# TODO: random problem selector (from not accepted problems)
 # TODO: check the changes in question_content and apply them to the code in other files
-# TODO: use config without having to have a session
 # TODO: check all commands for errors
 # TODO: README - search - download - check - submit
-# TODO: leet problem -f      displays erors
-# TODO: submit with only id (or filename)
 
 def positive_integer(value):
     try:
@@ -62,6 +58,7 @@ def main():
     problem_parser.add_argument('id', type=positive_integer, help='Problem ID of the problem', default=0, nargs='?')
     problem_parser.add_argument('-b', '--browser', action='store_true', help='Open the page in browser.')
     problem_parser.add_argument('-f', '--file', action='store_true', help='Create a file with the problem content.')
+    problem_parser.add_argument('-c', '--contents', action='store_true', help='Display contents of the question in the terminal.')
 
     
     today_problem_parser = subparsers.add_parser('today', help="Display today's problem.")
@@ -78,17 +75,18 @@ def main():
     submission_parser.set_defaults(func=SubmissionList)
     
     submission_parser = subparsers.add_parser('submit', help='Submit code answer')
-    submission_parser.add_argument('question_slug', type=str, help="Title slug of the question")
+    submission_parser.add_argument('path', type=str, help='Path to the file with code answer')
+    submission_parser.set_defaults(func=SendSubmission)
+    
+    submission_parser = subparsers.add_parser('check', help='Check code answer on example test')
     submission_parser.add_argument('path', type=str, help='Path to the file with code answer')
     submission_parser.set_defaults(func=SendSubmission)
         
-    
-    
     args = parser.parse_args()
     
     if hasattr(args, 'func'):
         command_instance = args.func()
-        command_instance._execute(args)  # call the private method __execute
+        command_instance._execute(args)
     else:
         print("Unknown command. Use 'leet --help' for available commands.")
 

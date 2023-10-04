@@ -17,6 +17,8 @@ class ProblemInfo(QueryTemplate):
         # Instance specific variables
         self.browserFlag = False
         self.fileFlag = False
+        self.randomFlag = False
+        self.contentFlag = False
         
         self._question_id: int = None
         self._title_slug: str = None
@@ -107,8 +109,7 @@ class ProblemInfo(QueryTemplate):
                 question_content = QuestionContent(problem.titleSlug)
             console.print(question_info_table)
             console.print(question_content)
-            
-        else:
+        elif getattr(args, 'id') != 0:
             try:
                 with Loader('Fetching problem info...', ''):
                     self.data = self.leet_api.get_request(self.API_URL)
@@ -124,6 +125,8 @@ class ProblemInfo(QueryTemplate):
                 console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
             if self.fileFlag:
                 self.create_submission_file(self.title_slug)
+        else:
+            console.print("Invalid ID has been provided. Please try again.", style=ALERT)
     
     @classmethod
     def create_submission_file(cls, title_slug: str = None) -> None:
@@ -133,9 +136,11 @@ class ProblemInfo(QueryTemplate):
         Args:
             title_slug (str): The title slug of the problem.
         """
+        watermark_info = '# This file was created by pyleetcode-cli software.\n# Do NOT modify the name of the file.\n\n'
         question = GetQuestionDetail(title_slug)
         file_name = f"{question.question_id}.{question.title_slug}.py"
         with open(file_name, 'w') as file:
+            file.write(watermark_info)
             file.write(question.code_snippet)
         console.print(f"File '{file_name}' has been created.")
            
@@ -146,12 +151,15 @@ class ProblemInfo(QueryTemplate):
             link = self.config.host + f'/problems/{self.title_slug}/'
             console.print(f'Link to the problem: {link}')
             self.open_in_browser(link)
-        else:
+        elif self.contentFlag:
             question_info_table = QuestionInfoTable(self.title_slug)
             console.print(question_info_table)
             question_content = QuestionContent(self.title_slug)
             console.print(question_content)
-
+        else:
+            question_info_table = QuestionInfoTable(self.title_slug)
+            console.print(question_info_table)
+            
     def __parse_args(self, args) -> None:
         """ Parses the arguments passed to the query. 
         
@@ -161,6 +169,10 @@ class ProblemInfo(QueryTemplate):
             self.browserFlag = True
         if getattr(args, 'file'):
             self.fileFlag = True
+        if getattr(args, 'random'):
+            self.randomFlag = True
+        if getattr(args, 'contents'):
+            self.contentFlag = True
             
     @property
     def data(self):
