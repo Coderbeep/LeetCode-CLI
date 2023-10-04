@@ -12,6 +12,7 @@ class SendSubmission(QueryTemplate):
         super().__init__()
         self.title_slug = None
         self.path = None
+        self.command = None
         self.runcode = None
         self.submission_id = None
         
@@ -34,19 +35,30 @@ class SendSubmission(QueryTemplate):
         return f"https://leetcode.com/submissions/detail/{self.runcode}/check/"
     
     def parse_args(self, args):
-        self.title_slug = args.question_slug
+        import os
+        self.command = args.command
         self.path = args.path
+        
+        
+        # Get the info from filename : 1234.title-slug.py
+        filename = os.path.basename(self.path)
+        self.title_slug = filename.split('.')[1]
+        
         
         # check if such slug exists
         ProblemInfo.lookup_slug(self.title_slug)
         
     def _execute(self, args):
         try:
-            with Loader('Uploading submission...', ''):
-                self.parse_args(args)
-                self.execute_submission(self.title_slug, self.path)
-            
-            self.show_submission_info(self.submit_response)
+            self.parse_args(args)
+            if self.command == 'submit':
+                with Loader('Uploading submission...', ''):
+                    submit_response = self.execute_submission(self.title_slug, self.path)
+                self.show_submission_info(submit_response)
+            elif self.command == 'check':
+                with Loader('Checking submission...', ''):
+                    check_response = self.execute_check(self.title_slug, self.path)
+                self.show_check_info(check_response)
         except Exception as e:
             console.print(f"{e.__class__.__name__}: {e}", style=ALERT)
     
@@ -81,16 +93,19 @@ class SendSubmission(QueryTemplate):
             response = requests.get(url=self.runcode_check_url,
                                     headers=self.config.headers,
                                     cookies=self.config.cookies)
-        self.show_check_info(response.json())
+        return response.json()
+        
     
     def show_check_info(self, response):
         if response.get('run_success'):
-            print(f"Runtime: {response.get('status_runtime')}")
-            print(f"Answer: {response.get('correct_answer')}")
-            print(f"Expected: {response.get('expected_code_answer')}")
-            print(f"Got answer: {response.get('code_answer')}")
+            console.print("\n[bold green]✓ Check Passed[/bold green]\n")
+            console.print(f"[bold]Runtime:[/bold] {response.get('status_runtime')}")
+            console.print(f"[bold]Answer:[/bold] {response.get('correct_answer')}")
+            console.print(f"[bold]Expected:[/bold] {response.get('expected_code_answer')}")
+            console.print(f"[bold]Got answer:[/bold] {response.get('code_answer')}")
         else:
-            print(f"Exception: {response.get('status_msg')}")
+            console.print("\n[bold red]✗ Check Failed[/bold red]\n")
+            console.print(f"[bold]Exception:[/bold] {response.get('status_msg')}")
             
     def execute_submission(self, title_slug, filename):
         # In similar way execute clicking submit button on the leetcode website
@@ -114,24 +129,24 @@ class SendSubmission(QueryTemplate):
             response = requests.get(url=self.submit_check_url,
                                     headers=self.config.headers,
                                     cookies=self.config.cookies)
-        self.submit_response = response.json()
+        return response.json()
             
     def show_submission_info(self, response):
         if response.get('run_success'):
             status_msg = response.get('status_msg')
             if status_msg == 'Accepted': # If the solution is accepted
-                print(f"Status: [bold green]{status_msg}[/bold green] :tada:")
-                print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} test cases -> {response.get('status_runtime')}")
+                console.print(f"\n[bold green]✓ Submission Passed[/bold green] :tada:")
+                console.print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} test cases in {response.get('status_runtime')}")
 
                 perc_evalutaion = SubmitEvaluation(f"{response.get('runtime_percentile'):.2f}", f"{response.get('memory_percentile'):.2f}")
-                print(perc_evalutaion)
+                console.print(perc_evalutaion)
             elif status_msg == 'Wrong Answer': # If the solution is wrong
-                print(f"Status: [bold red]{status_msg}[/bold red] :tada:")
-                print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
+                console.print(f"\n[bold red]✗ Submission Failed[/bold red] :tada:")
+                console.print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
         else:
             if response.get('status_msg') == 'Time Limit Exceeded':
-                print(f"Status: [bold red]{response.get('status_msg')}[/bold red] :alarm_clock:")
-                print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
+                console.print(f"\n[bold red]✗ Submission Failed[/bold red] :alarm_clock:")
+                console.print(f"Passed {response.get('total_correct')}/{response.get('total_testcases')} testcases")
             elif response.get('status_msg') == 'Runtime Error':
-                print(f"Status: [bold red]{response.get('status_msg')}[/bold red]")
-                print(f"{response.get('runtime_error')}")
+                console.print(f"\n[bold red]✗ Submission Failed[/bold red]")
+                console.print(f"{response.get('runtime_error')}")
