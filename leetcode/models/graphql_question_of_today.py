@@ -78,7 +78,7 @@ class QuestionOfToday(QueryTemplate):
         self.show()
         
         if self.fileFlag:
-            self.create_file(self.title_slug)
+            self.create_submission_file(self.title_slug)
 
     def show(self) -> None:
         """ Shows the question information and content or opens the question in a browser. 
@@ -99,11 +99,18 @@ class QuestionOfToday(QueryTemplate):
             print(question_info_table)
     
     @classmethod      
-    def create_file(cls, title_slug: str) -> None:
-        """ Creates a file with the question content. """
+    def create_submission_file(cls, title_slug: str) -> None:
+        """ Creates a file with the question content. 
+        
+        Args:
+            title_slug (str): The title slug of the question. """
+            
+        """ Add watermark to the file."""
+        watermark_info = '# This file was created by pyleetcode-cli software.\n# Do NOT modify the name of the file.\n\n'
         question = GetQuestionDetail(title_slug)
         filename = f"{question.question_id}.{question.title_slug}.py"
         with open(filename, 'w') as file:
+            file.write(watermark_info)
             file.write(question.code_snippet)
         console.print(f"File '{filename}' has been created.")
         
