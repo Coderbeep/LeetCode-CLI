@@ -30,7 +30,7 @@ options:
   -v, --version         show program's version number and exit
 
 Commands:
-  {config,stats,list,problem,today,submission,submit}
+  {config,stats,list,problem,today,submission,submit,check}
     config              Configure the CLI
     stats               Display statistics
     list                Display problem list
@@ -38,4 +38,23 @@ Commands:
     today               Display today's problem.
     submission          Download submission code
     submit              Submit code answer
+    check               Check code answer on example test
+```
+
+## Example workflow
+You can search for the problem in multiple ways: using lists, fetching question of the day, random question or using specific ID.  
+
+Take problem `1`, show its contents in the terminal and create a file with the code snippet:
+```
+leet problem 1 -fc
+```
+
+Now try to solve the problem. After that you can check the code against example test case:
+```
+leet test <filename>
+```
+
+Then try to submit the solution and wait for the response:
+```
+leet submit <filename>
 ```
