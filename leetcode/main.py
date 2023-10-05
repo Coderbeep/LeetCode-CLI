@@ -10,14 +10,7 @@ from leetcode.models.graphql_user_problems_solved import UserProblemsSolved
 from leetcode.models.problem_by_id_slug import ProblemInfo
 from leetcode.models.submit import SendSubmission
 
-# TODO: pipes support
-# TODO: add a command to open the question in editor
-# TODO: add a command to show the solution in the terminal
-# TODO: add a command to show the solution in the browser
 # TODO: problem with import in synced code or code to submit
-# TODO: check the changes in question_content and apply them to the code in other files
-# TODO: check all commands for errors
-# TODO: README - search - download - check - submit
 
 def positive_integer(value):
     try:
