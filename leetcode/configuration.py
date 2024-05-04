@@ -114,9 +114,10 @@ class Configuration():
     
     @property
     def csrf_cookie(self) -> str:
-        response = requests.get(url=self.host,
-                                cookies={"LEETCODE_SESSION": self.session_id})
-        return response.cookies["csrftoken"]
+        # response = requests.get(url=self.host,
+        #                         cookies={"LEETCODE_SESSION": self.session_id})
+        # return response.cookies["csrftoken"]
+        return self.user_config.get('csrf_token')
     
     @csrf_cookie.setter
     def csrf_cookie(self, value: str):
