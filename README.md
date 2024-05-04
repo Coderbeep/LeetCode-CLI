@@ -58,3 +58,28 @@ Then try to submit the solution and wait for the response:
 ```
 leet submit <filename>
 ```
+
+## Screenshots
+```
+> leet stats
+```
+
+![](/images/stats.png)
+
+
+```
+> leet list 
+```
+
+![](/images/list.png)
+
+```
+> leet problem --contents
+```
+![](/images/today.png)
+
+```
+> leet submission 1 --show
+```
+![](/images/submission.png)
+
